@@ -241,87 +241,6 @@ const AutoCarousel = () => {
   );
 };
 
-/* ── Content tabs ────────────────────────────────────────────────────── */
-const contentTabs = [
-  {
-    icon: Zap, label: "Preparação", title: "Preparação e Desenvolvimento",
-    desc: "Aquecimentos específicos para boxe, rotinas de mobilidade articular e exercícios de condicionamento físico para preparar atletas de todos os níveis.",
-    items: ["Aquecimentos dinâmicos", "Mobilidade articular", "Condicionamento progressivo", "Exercícios de coordenação", "Ativação muscular específica"]
-  },
-  {
-    icon: Target, label: "Técnica", title: "Técnica e Combate",
-    desc: "Fundamentos técnicos avançados, combinações de golpes planejadas, técnicas de defesa, drills de sparring e simulações reais de combate.",
-    items: ["Jab, direto, gancho, uppercut", "Técnicas de esquiva e defesa", "Combinações táticas", "Drills de sparring controlado", "Leitura e reação ao adversário"]
-  },
-  {
-    icon: Trophy, label: "Performance", title: "Performance e Aulas",
-    desc: "Treinos funcionais de alta intensidade, circuitos metabólicos e estruturas completas de planos de aula para academias e projetos sociais.",
-    items: ["Circuitos HIIT para boxe", "Treinos funcionais específicos", "Estrutura de aulas 50min/60min", "Periodização de treinos", "Avaliações de desempenho"]
-  }
-];
-
-const ContentTabs = () => {
-  const [active, setActive] = useState(0);
-  return (
-    <div>
-      <div className="flex justify-center gap-2 mb-10 flex-wrap">
-        {contentTabs.map((tab, i) => {
-          const Icon = tab.icon;
-          return (
-            <button
-              key={i}
-              data-testid={`tab-${i}`}
-              onClick={() => setActive(i)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-display font-bold uppercase tracking-wider text-sm transition-all duration-300 ${
-                active === i ? "bg-primary text-white" : "bg-card border border-border text-white/60 hover:text-white hover:border-primary/50"
-              }`}
-              style={active === i ? { boxShadow: "0 0 20px rgba(225,6,0,0.35)" } : {}}
-            >
-              <Icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={active}
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -18 }}
-          transition={{ duration: 0.3 }}
-          className="bg-card border border-border rounded-2xl p-8 md:p-12"
-          style={{ boxShadow: "0 0 60px rgba(225,6,0,0.07)" }}
-        >
-          <div className="flex flex-col md:flex-row gap-10">
-            <div className="md:w-1/2">
-              <div className="inline-flex items-center gap-3 mb-4">
-                {(() => { const Icon = contentTabs[active].icon; return <Icon className="w-7 h-7 text-primary" />; })()}
-                <h3 className="font-display text-2xl md:text-3xl font-bold uppercase text-white">{contentTabs[active].title}</h3>
-              </div>
-              <p className="text-white/55 leading-relaxed text-lg">{contentTabs[active].desc}</p>
-            </div>
-            <div className="md:w-1/2 space-y-3">
-              {contentTabs[active].items.map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.07 }}
-                  className="flex items-center gap-3 bg-black/40 rounded-lg px-4 py-3"
-                >
-                  <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
-                  <span className="font-semibold text-white/90">{item}</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  );
-};
-
 /* ── Upsell Modal ────────────────────────────────────────────────────── */
 const UpsellModal = ({ onClose }: { onClose: () => void }) => (
   <AnimatePresence>
@@ -459,9 +378,9 @@ const VslPlayer = () => {
 
   return (
     <div
-      className="relative w-full rounded-2xl overflow-hidden border border-border"
+      className="relative w-full max-w-sm mx-auto rounded-2xl overflow-hidden border border-border"
       style={{
-        aspectRatio: "16/9",
+        aspectRatio: "9/16",
         background: "#000",
         boxShadow: "0 0 60px rgba(225,6,0,0.1)"
       }}
@@ -564,23 +483,13 @@ export default function Home() {
             <motion.p variants={fadeIn} className="text-lg md:text-xl text-white/60 leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
               Transforme seus treinos com uma biblioteca completa de dinâmicas prontas para professores, academias e pessoas que desejam aprender Boxe em casa.
             </motion.p>
-            <motion.div variants={fadeIn}>
-              <button
-                data-testid="hero-cta"
-                onClick={() => scrollToSection("planos")}
-                className="bg-primary hover:bg-primary/90 text-white font-display text-xl font-bold px-12 py-5 rounded-xl transition-all transform hover:scale-105 active:scale-95 uppercase tracking-widest"
-                style={{ boxShadow: "0 0 50px rgba(225,6,0,0.4), 0 0 100px rgba(225,6,0,0.15)" }}
-              >
-                Quero Meu Acesso Agora
-              </button>
-            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* ── VSL Section ── */}
       <section className="py-20 bg-card border-y border-border">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className="container mx-auto px-4 max-w-md">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="text-center mb-10">
             <p className="text-white/40 text-xs uppercase tracking-widest font-bold mb-3">Assista antes de decidir</p>
             <h2 className="font-display text-3xl md:text-5xl font-bold uppercase tracking-tight">
@@ -590,6 +499,19 @@ export default function Home() {
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}>
             <VslPlayer />
+          </motion.div>
+
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mt-10 text-center">
+            <motion.button
+              data-testid="vsl-cta"
+              onClick={() => scrollToSection("planos")}
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              className="bg-primary hover:bg-primary/90 text-white font-display text-xl md:text-2xl font-bold px-10 md:px-14 py-5 rounded-xl transition-colors uppercase tracking-widest w-full sm:w-auto"
+              style={{ boxShadow: "0 0 50px rgba(225,6,0,0.5), 0 0 100px rgba(225,6,0,0.2)" }}
+            >
+              Garanta Seu BoxLab
+            </motion.button>
           </motion.div>
         </div>
       </section>
@@ -638,21 +560,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── O Que Você Recebe (tabs) ── */}
-      <section className="py-24 bg-background border-b border-border">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="text-center mb-14">
-            <h2 className="font-display text-4xl md:text-6xl font-bold uppercase tracking-tight">
-              O Que Você <span className="text-primary" style={{ textShadow: glowRed }}>Recebe</span>
-            </h2>
-            <p className="text-white/40 mt-4 text-base">Selecione um módulo para explorar o conteúdo</p>
-            <div className="w-16 h-1 bg-primary mx-auto mt-5 rounded-full" style={glowLine} />
-          </motion.div>
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}>
-            <ContentTabs />
-          </motion.div>
-        </div>
-      </section>
 
       {/* ── Pricing (pendulum) ── */}
       <section id="planos" className="py-24 bg-card border-b border-border">
