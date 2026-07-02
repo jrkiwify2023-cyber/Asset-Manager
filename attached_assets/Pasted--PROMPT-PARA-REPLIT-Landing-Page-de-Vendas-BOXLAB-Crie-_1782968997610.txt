@@ -1,0 +1,108 @@
+# PROMPT PARA REPLIT — Landing Page de Vendas "BOXLAB"
+
+Crie uma landing page de vendas **completa, funcional e responsiva** em HTML, CSS e JavaScript puro (ou React, se for o padrão do seu template Replit), para venda do infoproduto **BOXLAB — 150 Dinâmicas para Aulas de Boxe**.
+
+## Stack e requisitos técnicos
+- HTML5 semântico + CSS3 (Flexbox/Grid) + JavaScript vanilla (sem dependências pesadas). Se o projeto Replit já for React/Vite, use componentes funcionais com hooks.
+- Totalmente **responsiva** (mobile-first): breakpoints em 480px, 768px e 1024px.
+- Performance: imagens otimizadas/lazy-loaded, CSS e JS organizados em arquivos separados (`styles.css`, `script.js`).
+- Meta tags de SEO (title, description, Open Graph) e favicon.
+- Sem frameworks de pagamento reais — os botões de compra devem apontar para `#` ou para uma variável `CHECKOUT_URL` configurável no topo do JS, fácil de trocar depois.
+- Acessibilidade básica: contraste adequado, `alt` em imagens, navegação por teclado nos botões e no acordeão de FAQ.
+
+## Identidade visual
+- Paleta: **preto (#0a0a0a) predominante, vermelho vibrante (#e10600), branco (#ffffff) e dourado (#d4af37)** — dourado reservado para destacar o plano Premium.
+- Tipografia: fonte de impacto para títulos (ex: Bebas Neue, Anton ou Oswald via Google Fonts) + fonte legível para corpo de texto (ex: Inter ou Roboto).
+- Elementos visuais: ícones esportivos (lucide-react ou SVGs inline — 🥊🏆📩🛡), sombras, leve efeito metálico no dourado, botões com hover/transição suave, cards com bordas arredondadas e leve elevação.
+- Imagens: usar placeholders de alta qualidade relacionados a boxe (ex: Unsplash — luvas, saco de pancada, atletas treinando). Deixe comentado no código onde trocar por imagens reais do cliente.
+
+---
+
+## ESTRUTURA DA PÁGINA
+
+### 1. Header / Hero
+- Logo em texto estilizado: **BOXLAB**
+- Título: `150 Dinâmicas para Aulas de Boxe`
+- Subtítulo: "Transforme seus treinos com uma biblioteca completa de dinâmicas prontas para professores, academias e pessoas que desejam aprender Boxe em casa."
+- Botão CTA: **QUERO MEU ACESSO AGORA** (leva até a seção de planos via scroll suave)
+- Imagem de fundo ou lateral com atleta treinando
+
+### 2. Benefícios
+Grid de 6 itens com ícone + texto curto:
+- 🥊 Economize horas planejando treinos
+- 🥊 Nunca mais repita os mesmos exercícios
+- 🥊 Aulas mais organizadas
+- 🥊 Mais criatividade
+- 🥊 Conteúdo para todos os níveis
+- 🥊 Material profissional
+
+### 3. Para quem é
+Cards em grid (ícone de check + texto):
+Professores de Boxe · Personal Trainers · Academias · Projetos Sociais · Pessoas que treinam em casa · Iniciantes
+
+### 4. O que você recebe
+3 cards: **Preparação e Desenvolvimento**, **Técnica e Combate**, **Performance e Aulas**, com um destaque central/selo dizendo "150 Dinâmicas de Boxe".
+
+### 5. Oferta especial + cronômetro
+- Faixa de destaque: "🔥 Oferta Especial por Tempo Limitado"
+- **Cronômetro regressivo funcional em JavaScript** (ex: 15 minutos, reiniciando a cada visita ou fixo — defina no JS como `const COUNTDOWN_MINUTES = 15`), formatado `MM:SS`
+- Texto abaixo: "Após o término da oferta os valores poderão ser alterados."
+
+### 6. Planos (pricing)
+Dois cards lado a lado (empilham no mobile):
+
+**Plano Básico — R$ 12,90**
+- Preparação e Desenvolvimento
+- Técnica e Combate
+- Performance e Aulas
+- 150 Dinâmicas de Boxe
+- Botão vermelho: "QUERO O PLANO BÁSICO"
+
+**Plano Premium — R$ 22,90** (card maior, borda dourada, brilho/glow, selo "⭐ MAIS ESCOLHIDO")
+- Tudo do Plano Básico
+- 🎁 100 Combinações de Golpes
+- 🎁 Cronômetro de Treinos + Protocolos
+- Botão dourado: "QUERO O PREMIUM"
+- Selo secundário: "Melhor Custo-Benefício"
+
+### 7. Como você recebe
+Faixa de fundo escuro com ícone de e-mail:
+"📩 Receba diretamente no seu e-mail — Após a confirmação do pagamento você receberá acesso imediato aos materiais para download."
+Ícones: 📱 Celular · 💻 Computador · 📲 Tablet
+
+### 8. Depoimentos
+Carrossel ou grid de cards com 5 estrelas:
+1. "Material excelente! Minhas aulas ficaram muito mais dinâmicas." — Carlos M.
+2. "Valeu cada centavo." — Fernanda R.
+3. "Treino em casa e adorei." — Juliana P.
+4. "Conteúdo muito organizado." — Rodrigo S.
+5. "Os alunos adoraram." — Tiago L.
+
+### 9. Garantia
+Seção com ícone de escudo: "🛡 Garantia de 7 Dias — Se o material não atender às suas expectativas, você poderá solicitar o reembolso dentro do prazo previsto pela plataforma."
+
+### 10. FAQ
+Acordeão **funcional em JS** (abre/fecha ao clicar, ícone de + que vira x):
+- O acesso é imediato?
+- Posso acessar pelo celular?
+- Serve para iniciantes?
+- Recebo por e-mail?
+- Os bônus fazem parte de qual plano?
+
+### 11. Rodapé / CTA final
+Título: "Comece hoje mesmo a transformar seus treinos de Boxe."
+Dois botões: "🥊 Quero o Plano Básico" e "🏆 Quero o Plano Premium"
+Rodapé padrão com copyright e links (política de privacidade, termos — placeholders).
+
+---
+
+## Interações JavaScript esperadas
+1. Cronômetro regressivo funcional na seção de oferta.
+2. Scroll suave ao clicar em qualquer CTA que aponte para a seção de planos.
+3. Acordeão de FAQ funcional (abrir/fechar).
+4. Efeito de hover/transição em todos os botões e cards.
+5. (Opcional) Animação leve de entrada dos elementos ao rolar a página (fade-in / slide-up via Intersection Observer).
+
+## Entregáveis
+- `index.html`, `styles.css`, `script.js` (ou estrutura de componentes se React).
+- Código comentado nos pontos de customização (preços, link de checkout, textos, imagens).
