@@ -1,0 +1,2 @@
+artifacts/boxlab/public/video/vsl-boxlab.mp4 filter=lfs diff=lfs merge=lfs -text
+attached_assets/VSL_BOXLAB_1783028139426.mp4 filter=lfs diff=lfs merge=lfs -text
