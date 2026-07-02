@@ -17,6 +17,7 @@ import {
   Trophy,
   Play,
   Clock,
+  Flame,
   X
 } from "lucide-react";
 import {
@@ -68,19 +69,43 @@ const HeaderTimer = () => {
   return (
     <button
       onClick={() => scrollToSection("planos")}
-      className="flex items-center justify-center gap-3 w-full h-full px-4 py-3 md:py-3.5 transition-transform active:scale-[0.99]"
+      className="relative flex items-center justify-center gap-2 md:gap-4 w-full h-full px-4 py-2.5 md:py-3 overflow-hidden transition-transform active:scale-[0.99]"
       style={{
-        background: "linear-gradient(90deg,#8a0400,#e10600,#8a0400)",
-        backgroundSize: "200% 100%",
-        animation: "headerPulse 2.2s ease-in-out infinite",
+        background: "linear-gradient(180deg,#140505,#0a0a0a)",
+        borderBottom: "1px solid rgba(225,6,0,0.35)",
       }}
     >
-      <Clock className="w-4 h-4 md:w-5 md:h-5 text-white flex-shrink-0" />
-      <span className="text-white/90 text-xs md:text-sm font-semibold uppercase tracking-widest hidden xs:inline">
-        Oferta termina em
+      {/* animated glow sweep */}
+      <span
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "linear-gradient(90deg, transparent, rgba(225,6,0,0.25), transparent)",
+          backgroundSize: "60% 100%",
+          animation: "headerSweep 3s linear infinite",
+        }}
+      />
+      <span className="relative flex items-center gap-1.5 text-primary">
+        <Flame className="w-4 h-4 md:w-5 md:h-5" style={{ filter: "drop-shadow(0 0 6px rgba(225,6,0,0.8))" }} />
+        <span className="text-white/70 text-[11px] md:text-sm font-semibold uppercase tracking-widest hidden xs:inline">
+          Oferta especial termina em
+        </span>
       </span>
-      <span className="font-display font-extrabold text-lg md:text-2xl text-white tracking-widest tabular-nums" style={{ textShadow: "0 0 20px rgba(255,255,255,0.4)" }}>
-        {m}:{s}
+
+      <span className="relative flex items-center gap-1 md:gap-1.5">
+        {[{ val: m, label: "min" }, { val: s, label: "seg" }].map(({ val, label }, i) => (
+          <span key={label} className="flex items-center gap-1 md:gap-1.5">
+            <span
+              className="flex flex-col items-center justify-center bg-black/60 border border-primary/40 rounded-md px-2 py-0.5 md:px-2.5 md:py-1 min-w-[38px] md:min-w-[46px]"
+              style={{ boxShadow: "0 0 16px rgba(225,6,0,0.35)" }}
+            >
+              <span className="font-display font-extrabold text-base md:text-xl text-white tabular-nums leading-none" style={{ textShadow: "0 0 12px rgba(225,6,0,0.6)" }}>
+                {val}
+              </span>
+              <span className="text-[8px] md:text-[9px] uppercase tracking-widest text-white/35 leading-none mt-0.5">{label}</span>
+            </span>
+            {i === 0 && <span className="font-display font-extrabold text-primary text-lg md:text-xl -mx-0.5">:</span>}
+          </span>
+        ))}
       </span>
     </button>
   );
