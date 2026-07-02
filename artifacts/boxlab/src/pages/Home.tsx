@@ -66,13 +66,23 @@ const HeaderTimer = () => {
   const m = Math.floor(t / 60).toString().padStart(2, "0");
   const s = (t % 60).toString().padStart(2, "0");
   return (
-    <div className="hidden sm:flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-lg px-3 py-1.5">
-      <Clock className="w-3.5 h-3.5 text-primary flex-shrink-0" />
-      <span className="font-display font-bold text-sm text-primary tracking-widest tabular-nums">
+    <button
+      onClick={() => scrollToSection("planos")}
+      className="flex items-center justify-center gap-3 w-full h-full px-4 py-3 md:py-3.5 transition-transform active:scale-[0.99]"
+      style={{
+        background: "linear-gradient(90deg,#8a0400,#e10600,#8a0400)",
+        backgroundSize: "200% 100%",
+        animation: "headerPulse 2.2s ease-in-out infinite",
+      }}
+    >
+      <Clock className="w-4 h-4 md:w-5 md:h-5 text-white flex-shrink-0" />
+      <span className="text-white/90 text-xs md:text-sm font-semibold uppercase tracking-widest hidden xs:inline">
+        Oferta termina em
+      </span>
+      <span className="font-display font-extrabold text-lg md:text-2xl text-white tracking-widest tabular-nums" style={{ textShadow: "0 0 20px rgba(255,255,255,0.4)" }}>
         {m}:{s}
       </span>
-      <span className="text-white/40 text-xs hidden md:inline">oferta termina em</span>
-    </div>
+    </button>
   );
 };
 
@@ -429,32 +439,15 @@ export default function Home() {
     {showUpsell && <UpsellModal onClose={() => setShowUpsell(false)} />}
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
 
-      {/* ── Sticky Header (with compact timer) ── */}
+      {/* ── Sticky Header (full-width dynamic timer bar) ── */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/95 backdrop-blur-md border-b border-border shadow-md py-3" : "bg-transparent py-5"
+        isScrolled ? "shadow-lg" : ""
       }`}>
-        <div className="container mx-auto px-4 flex items-center justify-between max-w-6xl gap-3">
-          <div className="font-display text-3xl font-extrabold tracking-tight flex items-center gap-1 flex-shrink-0">
-            <span className="text-white">BOX</span>
-            <span className="text-primary" style={{ textShadow: "0 0 20px rgba(225,6,0,0.6)" }}>LAB</span>
-          </div>
-
-          {/* compact countdown */}
-          <HeaderTimer />
-
-          <button
-            data-testid="header-cta"
-            onClick={() => scrollToSection("planos")}
-            className="bg-primary hover:bg-primary/90 text-white font-display font-bold px-5 py-2.5 rounded-lg transition-all text-sm uppercase tracking-widest flex-shrink-0"
-            style={{ boxShadow: "0 0 20px rgba(225,6,0,0.3)" }}
-          >
-            Comprar Agora
-          </button>
-        </div>
+        <HeaderTimer />
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative min-h-[100dvh] flex items-center pt-20 overflow-hidden">
+      <section className="relative min-h-[100dvh] flex items-center pt-14 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/60 to-background z-10" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60 z-10" />
