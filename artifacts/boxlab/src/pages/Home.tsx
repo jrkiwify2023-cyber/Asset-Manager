@@ -394,13 +394,13 @@ const UpsellModal = ({ onClose }: { onClose: () => void }) => (
           {/* Features */}
           <div className="space-y-2.5 mb-8 bg-black/30 rounded-xl p-5">
             {[
-              { gold: false, text: "Preparação e Desenvolvimento" },
-              { gold: false, text: "Técnica e Combate" },
-              { gold: false, text: "Performance e Aulas" },
-              { gold: false, text: "150 Dinâmicas de Boxe" },
-              { gold: true,  text: "100 Combinações de Golpes (Bônus)" },
-              { gold: true,  text: "Cronômetro de Treinos + Protocolos (Bônus)" },
-              { gold: false, text: "Garantia de 7 dias — 100% do dinheiro de volta" },
+              { gold: false, text: "Mais de 150 Dinâmicas" },
+              { gold: false, text: "Garantia de 7 dias" },
+              { gold: false, text: "Acesso Vitalício" },
+              { gold: true,  text: "Mais de 400 Dinâmicas no Premium" },
+              { gold: true,  text: "Atualizações e Suporte VIP (Premium)" },
+              { gold: true,  text: "Cronômetro de Treinos (Bônus)" },
+              { gold: true,  text: "Certificado do Boxe (Bônus)" },
             ].map(({ gold, text }, i) => (
               <div key={i} className="flex items-center gap-3">
                 <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${gold ? "text-accent" : "text-primary"}`} />
@@ -654,7 +654,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="space-y-3 mb-8">
-                    {["Preparação e Desenvolvimento","Técnica e Combate","Performance e Aulas","150 Dinâmicas de Boxe"].map((item, i) => (
+                    {["Mais de 150 Dinâmicas","Garantia de 7 dias","Acesso Vitalício"].map((item, i) => (
                       <div key={i} className="flex items-center gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
                         <span className="text-white/80">{item}</span>
@@ -700,27 +700,34 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="space-y-3 mb-8">
-                    <div className="flex items-center gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
-                      <span className="text-white/80 font-semibold">Tudo do Plano Básico</span>
-                    </div>
-                    <div className="h-px bg-white/10 my-3" />
-                    <div className="flex items-center gap-3">
-                      <Gift className="w-5 h-5 text-accent flex-shrink-0" />
-                      <span className="text-accent font-semibold">100 Combinações de Golpes (Bônus)</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Gift className="w-5 h-5 text-accent flex-shrink-0" />
-                      <span className="text-accent font-semibold">Cronômetro de Treinos + Protocolos (Bônus)</span>
-                    </div>
-                    <div className="h-px bg-white/10 my-3" />
-                    <div className="flex items-center gap-3 bg-accent/10 rounded-lg px-3 py-2">
-                      <ShieldCheck className="w-5 h-5 text-accent flex-shrink-0" />
-                      <span className="text-accent font-bold text-sm">Garantia de 7 dias — 100% reembolso</span>
-                    </div>
                     <div className="flex items-center gap-3 bg-accent/5 rounded-lg px-3 py-2">
                       <Star className="w-5 h-5 text-accent flex-shrink-0 fill-accent" />
-                      <span className="text-accent font-bold text-sm">280 Dinâmicas no total</span>
+                      <span className="text-accent font-bold text-sm">Mais de 400 Dinâmicas no total</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-white/80 font-semibold">Garantia de 7 dias</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-white/80 font-semibold">Acesso Vitalício</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-white/80 font-semibold">Atualizações Gratuitas</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-white/80 font-semibold">Suporte VIP</span>
+                    </div>
+                    <div className="h-px bg-white/10 my-3" />
+                    <div className="flex items-center gap-3">
+                      <Gift className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-accent font-semibold">Cronômetro de Treinos (Bônus)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Gift className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-accent font-semibold">Certificado do Boxe (Bônus)</span>
                     </div>
                   </div>
                   <a href={CHECKOUT_URL_PREMIUM} data-testid="btn-premium"
@@ -819,7 +826,7 @@ export default function Home() {
               { q: "Posso acessar pelo celular?", a: "Sim! O material é acessível em qualquer dispositivo: celular, computador ou tablet." },
               { q: "Serve para iniciantes?", a: "Com certeza! O conteúdo é desenvolvido para todos os níveis, do iniciante ao avançado." },
               { q: "Recebo por e-mail?", a: "Sim! Todo o material é enviado diretamente para o e-mail cadastrado no momento da compra." },
-              { q: "Os bônus fazem parte de qual plano?", a: "Os bônus (100 Combinações de Golpes e Cronômetro de Treinos) são exclusivos do Plano Premium." },
+              { q: "Os bônus fazem parte de qual plano?", a: "Os bônus (Cronômetro de Treinos e Certificado do Boxe) são exclusivos do Plano Premium." },
             ].map((faq, i) => (
               <AccordionItem key={i} value={`item-${i}`}
                 className="bg-background border border-border rounded-xl px-6 data-[state=open]:border-primary/50 transition-all duration-300">
