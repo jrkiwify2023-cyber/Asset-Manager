@@ -1,6 +1,6 @@
-# [Project name]
+# BOXLAB — Landing Page de Vendas
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Landing page de vendas para o infoproduto BOXLAB (150 Dinâmicas para Aulas de Boxe), com design dark/vermelho/dourado, cronômetro regressivo, acordeão de FAQ e dois planos de preços.
 
 ## Run & Operate
 
