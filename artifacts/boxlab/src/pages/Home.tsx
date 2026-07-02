@@ -27,6 +27,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import heroBg from "/hero-boxing.png";
+import vslVideo from "/video/vsl-boxlab.mp4";
+import vslThumbnail from "/video/thumbnail-vsl.jpg";
 
 const CHECKOUT_URL = "https://pay.wiapy.com/z5wXj6DSZ5i";
 const CHECKOUT_URL_PREMIUM = "https://pay.wiapy.com/Rs06p4bonnE";
@@ -443,6 +445,76 @@ const PendulumCard = ({ children, delay = 0 }: { children: React.ReactNode; dela
   </motion.div>
 );
 
+/* ── VSL Player (click-to-play, no autoplay) ────────────────────────── */
+const VslPlayer = () => {
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const handlePlay = () => {
+    setPlaying(true);
+    requestAnimationFrame(() => {
+      videoRef.current?.play().catch(() => {});
+    });
+  };
+
+  return (
+    <div
+      className="relative w-full rounded-2xl overflow-hidden border border-border"
+      style={{
+        aspectRatio: "16/9",
+        background: "#000",
+        boxShadow: "0 0 60px rgba(225,6,0,0.1)"
+      }}
+      data-testid="vsl-player"
+    >
+      <video
+        ref={videoRef}
+        src={vslVideo}
+        poster={vslThumbnail}
+        controls={playing}
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+
+      {!playing && (
+        <button
+          onClick={handlePlay}
+          data-testid="vsl-play-button"
+          className="absolute inset-0 w-full h-full flex items-center justify-center group cursor-pointer"
+          aria-label="Assistir vídeo"
+        >
+          <img src={vslThumbnail} alt="Capa do vídeo BOXLAB" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 100%)" }} />
+
+          {/* Background subtle pattern */}
+          <div className="absolute inset-0 opacity-10"
+            style={{ backgroundImage: "repeating-linear-gradient(45deg,#e10600 0,#e10600 1px,transparent 0,transparent 50%)", backgroundSize: "20px 20px" }} />
+
+          {/* Glow ring + play button */}
+          <div className="relative z-10 flex flex-col items-center gap-4">
+            <div
+              className="w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+              style={{
+                background: "linear-gradient(135deg,#e10600,#c00000)",
+                boxShadow: "0 0 0 12px rgba(225,6,0,0.15), 0 0 60px rgba(225,6,0,0.5)"
+              }}
+            >
+              <Play className="w-8 h-8 md:w-12 md:h-12 text-white ml-1" fill="currentColor" />
+            </div>
+            <p className="font-display font-bold uppercase tracking-widest text-white text-sm md:text-base" style={{ textShadow: "0 2px 8px rgba(0,0,0,0.8)" }}>
+              Assistir Agora
+            </p>
+          </div>
+
+          {/* corner accent border */}
+          <div className="absolute inset-3 md:inset-4 border rounded-xl pointer-events-none" style={{ borderColor: "rgba(212,175,55,0.4)" }} />
+        </button>
+      )}
+    </div>
+  );
+};
+
 /* ── Main component ──────────────────────────────────────────────────── */
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -517,46 +589,7 @@ export default function Home() {
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}>
-            {/* VSL placeholder — replace the div below with an <iframe> or <video> tag */}
-            <div
-              className="relative w-full rounded-2xl overflow-hidden border border-border group cursor-pointer"
-              style={{
-                aspectRatio: "16/9",
-                background: "linear-gradient(135deg,#0f0f0f,#1a0a0a)",
-                boxShadow: "0 0 60px rgba(225,6,0,0.1)"
-              }}
-              data-testid="vsl-placeholder"
-            >
-              {/* Background subtle pattern */}
-              <div className="absolute inset-0 opacity-5"
-                style={{ backgroundImage: "repeating-linear-gradient(45deg,#e10600 0,#e10600 1px,transparent 0,transparent 50%)", backgroundSize: "20px 20px" }} />
-
-              {/* Glow ring */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div
-                  className="w-24 h-24 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
-                  style={{
-                    background: "rgba(225,6,0,0.15)",
-                    boxShadow: "0 0 0 12px rgba(225,6,0,0.07), 0 0 60px rgba(225,6,0,0.2)"
-                  }}
-                >
-                  <Play className="w-10 h-10 text-primary ml-1" fill="currentColor" />
-                </div>
-              </div>
-
-              {/* Label */}
-              <div className="absolute bottom-6 left-0 right-0 text-center">
-                <p className="font-display font-bold uppercase tracking-widest text-white/40 text-sm">
-                  {/* TROCAR: cole aqui a URL do seu vídeo de vendas (YouTube, Vimeo, Panda, etc.) */}
-                  Cole aqui o seu vídeo de vendas
-                </p>
-              </div>
-            </div>
-
-            <p className="text-center text-white/25 text-xs mt-4 font-mono">
-              {/* Para usar: substitua o div acima por: */}
-              {/* <iframe src="URL_DO_VIDEO" allow="autoplay; fullscreen" className="absolute inset-0 w-full h-full" frameBorder="0" /> */}
-            </p>
+            <VslPlayer />
           </motion.div>
         </div>
       </section>
