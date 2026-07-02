@@ -202,3 +202,8 @@
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
+@keyframes headerSweep {
+  0% { background-position: -60% 0; }
+  100% { background-position: 160% 0; }
+}
