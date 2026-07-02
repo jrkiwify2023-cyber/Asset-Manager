@@ -16,7 +16,8 @@ import {
   Target,
   Trophy,
   Play,
-  Clock
+  Clock,
+  X
 } from "lucide-react";
 import {
   Accordion,
@@ -283,6 +284,118 @@ const ContentTabs = () => {
   );
 };
 
+/* ── Upsell Modal ────────────────────────────────────────────────────── */
+const UpsellModal = ({ onClose }: { onClose: () => void }) => (
+  <AnimatePresence>
+    <motion.div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      {/* Backdrop */}
+      <motion.div
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      />
+
+      {/* Card */}
+      <motion.div
+        className="relative w-full max-w-lg rounded-2xl overflow-hidden"
+        initial={{ scale: 0.85, opacity: 0, y: 40 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        transition={{ type: "spring", damping: 20, stiffness: 300 }}
+        style={{
+          background: "linear-gradient(135deg,#0f0800 0%,#1a1000 100%)",
+          border: "2px solid hsl(46 65% 52%)",
+          boxShadow: "0 0 80px rgba(212,175,55,0.25), 0 0 160px rgba(212,175,55,0.08)"
+        }}
+      >
+        {/* Close */}
+        <button
+          onClick={onClose}
+          data-testid="upsell-close"
+          className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors z-10"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        {/* Top badge */}
+        <div className="bg-primary px-6 py-3 text-center">
+          <p className="font-display font-bold uppercase tracking-widest text-white text-sm animate-pulse">
+            Espera! Temos uma oferta especial para você
+          </p>
+        </div>
+
+        <div className="p-8">
+          <h2 className="font-display text-3xl md:text-4xl font-bold uppercase text-center text-accent leading-tight mb-2"
+            style={{ textShadow: "0 0 30px rgba(212,175,55,0.3)" }}>
+            Acesse o Plano Premium
+          </h2>
+          <p className="text-center text-white/50 text-sm mb-6">
+            Por apenas mais R$ 5,00, tenha acesso completo a tudo:
+          </p>
+
+          {/* Price comparison */}
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="text-center">
+              <p className="text-white/30 text-xs uppercase tracking-widest">Era</p>
+              <p className="font-display text-3xl text-white/30 line-through">R$ 22,90</p>
+            </div>
+            <div className="w-px h-12 bg-white/10" />
+            <div className="text-center">
+              <p className="text-accent text-xs uppercase tracking-widest font-bold">Oferta especial</p>
+              <div className="flex items-baseline gap-1 text-accent">
+                <span className="font-display text-2xl">R$</span>
+                <span className="font-display text-5xl font-bold" style={{ textShadow: "0 0 20px rgba(212,175,55,0.4)" }}>17,90</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Features */}
+          <div className="space-y-2.5 mb-8 bg-black/30 rounded-xl p-5">
+            {[
+              { gold: false, text: "Preparação e Desenvolvimento" },
+              { gold: false, text: "Técnica e Combate" },
+              { gold: false, text: "Performance e Aulas" },
+              { gold: false, text: "150 Dinâmicas de Boxe" },
+              { gold: true,  text: "100 Combinações de Golpes (Bônus)" },
+              { gold: true,  text: "Cronômetro de Treinos + Protocolos (Bônus)" },
+              { gold: false, text: "Garantia de 7 dias — 100% do dinheiro de volta" },
+            ].map(({ gold, text }, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${gold ? "text-accent" : "text-primary"}`} />
+                <span className={`text-sm font-semibold ${gold ? "text-accent" : "text-white/80"}`}>{text}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <a
+            href={CHECKOUT_URL_PREMIUM}
+            data-testid="upsell-accept"
+            className="block text-center font-display font-bold text-xl uppercase tracking-widest py-4 rounded-xl transition-all hover:scale-105 mb-3"
+            style={{ background: "linear-gradient(135deg,#d4af37,#f0d060,#d4af37)", color: "#000", boxShadow: "0 0 30px rgba(212,175,55,0.4)" }}
+          >
+            Sim! Quero o Premium por R$ 17,90
+          </a>
+
+          <button
+            onClick={onClose}
+            data-testid="upsell-decline"
+            className="block w-full text-center text-white/30 hover:text-white/60 text-sm py-2 transition-colors"
+          >
+            Não, quero continuar apenas com o plano básico
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  </AnimatePresence>
+);
+
 /* ── Pendulum plan card ──────────────────────────────────────────────── */
 const PendulumCard = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
   <motion.div
@@ -297,6 +410,7 @@ const PendulumCard = ({ children, delay = 0 }: { children: React.ReactNode; dela
 /* ── Main component ──────────────────────────────────────────────────── */
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showUpsell, setShowUpsell] = useState(false);
 
   useEffect(() => {
     const fn = () => setIsScrolled(window.scrollY > 50);
@@ -310,6 +424,8 @@ export default function Home() {
   const glowLine = { boxShadow: "0 0 10px rgba(225,6,0,0.8)" };
 
   return (
+    <>
+    {showUpsell && <UpsellModal onClose={() => setShowUpsell(false)} />}
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
 
       {/* ── Sticky Header (with compact timer) ── */}
@@ -526,10 +642,13 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                  <a href={CHECKOUT_URL} data-testid="btn-basico"
-                    className="block text-center border-2 border-primary text-primary hover:bg-primary hover:text-white font-display font-bold text-lg uppercase tracking-widest py-4 rounded-xl transition-all duration-300">
+                  <button
+                    onClick={() => setShowUpsell(true)}
+                    data-testid="btn-basico"
+                    className="block w-full text-center border-2 border-primary text-primary hover:bg-primary hover:text-white font-display font-bold text-lg uppercase tracking-widest py-4 rounded-xl transition-all duration-300"
+                  >
                     Quero o Plano Básico
-                  </a>
+                  </button>
                 </div>
               </PendulumCard>
             </motion.div>
@@ -574,6 +693,15 @@ export default function Home() {
                     <div className="flex items-center gap-3">
                       <Gift className="w-5 h-5 text-accent flex-shrink-0" />
                       <span className="text-accent font-semibold">Cronômetro de Treinos + Protocolos (Bônus)</span>
+                    </div>
+                    <div className="h-px bg-white/10 my-3" />
+                    <div className="flex items-center gap-3 bg-accent/10 rounded-lg px-3 py-2">
+                      <ShieldCheck className="w-5 h-5 text-accent flex-shrink-0" />
+                      <span className="text-accent font-bold text-sm">Garantia de 7 dias — 100% reembolso</span>
+                    </div>
+                    <div className="flex items-center gap-3 bg-accent/5 rounded-lg px-3 py-2">
+                      <Star className="w-5 h-5 text-accent flex-shrink-0 fill-accent" />
+                      <span className="text-accent font-bold text-sm">280 Dinâmicas no total</span>
                     </div>
                   </div>
                   <a href={CHECKOUT_URL_PREMIUM} data-testid="btn-premium"
@@ -728,6 +856,7 @@ export default function Home() {
         </div>
       </footer>
     </div>
+    </>
   );
 }
 
