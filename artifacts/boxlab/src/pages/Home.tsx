@@ -384,13 +384,13 @@ const UpsellModal = ({ onClose }: { onClose: () => void }) => (
             Sim! Quero o Premium por R$ 17,90
           </a>
 
-          <button
-            onClick={onClose}
+          <a
+            href={CHECKOUT_URL}
             data-testid="upsell-decline"
             className="block w-full text-center text-white/30 hover:text-white/60 text-sm py-2 transition-colors"
           >
-            Não, quero continuar apenas com o plano básico
-          </button>
+            Não, quero continuar apenas com o plano básico (R$ 12,90)
+          </a>
         </div>
       </motion.div>
     </motion.div>
