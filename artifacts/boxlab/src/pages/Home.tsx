@@ -27,8 +27,9 @@ import {
 } from "@/components/ui/accordion";
 import heroBg from "/hero-boxing.png";
 
-const CHECKOUT_URL = "#";
-const CHECKOUT_URL_PREMIUM = "#";
+const CHECKOUT_URL = "https://pay.wiapy.com/z5wXj6DSZ5i";
+const CHECKOUT_URL_PREMIUM = "https://pay.wiapy.com/Rs06p4bonnE";
+const CHECKOUT_URL_UPSELL = "https://pay.wiapy.com/Mz09YCSscIRi";
 
 const scrollToSection = (id: string) => {
   const element = document.getElementById(id);
@@ -375,7 +376,7 @@ const UpsellModal = ({ onClose }: { onClose: () => void }) => (
 
           {/* CTA */}
           <a
-            href={CHECKOUT_URL_PREMIUM}
+            href={CHECKOUT_URL_UPSELL}
             data-testid="upsell-accept"
             className="block text-center font-display font-bold text-xl uppercase tracking-widest py-4 rounded-xl transition-all hover:scale-105 mb-3"
             style={{ background: "linear-gradient(135deg,#d4af37,#f0d060,#d4af37)", color: "#000", boxShadow: "0 0 30px rgba(212,175,55,0.4)" }}
