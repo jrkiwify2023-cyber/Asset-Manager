@@ -12,10 +12,6 @@ import {
   Gift,
   ChevronLeft,
   ChevronRight,
-  Zap,
-  Target,
-  Trophy,
-  Play,
   Clock,
   Flame,
   X
@@ -27,8 +23,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import heroBg from "/hero-boxing.png";
-import vslVideo from "/video/vsl-boxlab.mp4";
-import vslThumbnail from "/video/thumbnail-vsl.jpg";
 
 const CHECKOUT_URL = "https://pay.wiapy.com/z5wXj6DSZ5i";
 const CHECKOUT_URL_PREMIUM = "https://pay.wiapy.com/Rs06p4bonnE";
@@ -364,76 +358,6 @@ const PendulumCard = ({ children, delay = 0 }: { children: React.ReactNode; dela
   </motion.div>
 );
 
-/* ── VSL Player (click-to-play, no autoplay) ────────────────────────── */
-const VslPlayer = () => {
-  const [playing, setPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  const handlePlay = () => {
-    setPlaying(true);
-    requestAnimationFrame(() => {
-      videoRef.current?.play().catch(() => {});
-    });
-  };
-
-  return (
-    <div
-      className="relative w-full max-w-sm mx-auto rounded-2xl overflow-hidden border border-border"
-      style={{
-        aspectRatio: "9/16",
-        background: "#000",
-        boxShadow: "0 0 60px rgba(225,6,0,0.1)"
-      }}
-      data-testid="vsl-player"
-    >
-      <video
-        ref={videoRef}
-        src={vslVideo}
-        poster={vslThumbnail}
-        controls={playing}
-        playsInline
-        preload="metadata"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-
-      {!playing && (
-        <button
-          onClick={handlePlay}
-          data-testid="vsl-play-button"
-          className="absolute inset-0 w-full h-full flex items-center justify-center group cursor-pointer"
-          aria-label="Assistir vídeo"
-        >
-          <img src={vslThumbnail} alt="Capa do vídeo BOXLAB" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 100%)" }} />
-
-          {/* Background subtle pattern */}
-          <div className="absolute inset-0 opacity-10"
-            style={{ backgroundImage: "repeating-linear-gradient(45deg,#e10600 0,#e10600 1px,transparent 0,transparent 50%)", backgroundSize: "20px 20px" }} />
-
-          {/* Glow ring + play button */}
-          <div className="relative z-10 flex flex-col items-center gap-4">
-            <div
-              className="w-20 h-20 md:w-28 md:h-28 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
-              style={{
-                background: "linear-gradient(135deg,#e10600,#c00000)",
-                boxShadow: "0 0 0 12px rgba(225,6,0,0.15), 0 0 60px rgba(225,6,0,0.5)"
-              }}
-            >
-              <Play className="w-8 h-8 md:w-12 md:h-12 text-white ml-1" fill="currentColor" />
-            </div>
-            <p className="font-display font-bold uppercase tracking-widest text-white text-sm md:text-base" style={{ textShadow: "0 2px 8px rgba(0,0,0,0.8)" }}>
-              Assistir Agora
-            </p>
-          </div>
-
-          {/* corner accent border */}
-          <div className="absolute inset-3 md:inset-4 border rounded-xl pointer-events-none" style={{ borderColor: "rgba(212,175,55,0.4)" }} />
-        </button>
-      )}
-    </div>
-  );
-};
-
 /* ── Main component ──────────────────────────────────────────────────── */
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -483,35 +407,6 @@ export default function Home() {
             <motion.p variants={fadeIn} className="text-lg md:text-xl text-white/60 leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
               Transforme seus treinos com uma biblioteca completa de dinâmicas prontas para professores, academias e pessoas que desejam aprender Boxe em casa.
             </motion.p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── VSL Section ── */}
-      <section className="py-20 bg-card border-y border-border">
-        <div className="container mx-auto px-4 max-w-md">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="text-center mb-10">
-            <p className="text-white/40 text-xs uppercase tracking-widest font-bold mb-3">Assista antes de decidir</p>
-            <h2 className="font-display text-3xl md:text-5xl font-bold uppercase tracking-tight">
-              Veja o <span className="text-primary" style={{ textShadow: glowRed }}>BOXLAB</span> em ação
-            </h2>
-          </motion.div>
-
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}>
-            <VslPlayer />
-          </motion.div>
-
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="mt-10 text-center">
-            <motion.button
-              data-testid="vsl-cta"
-              onClick={() => scrollToSection("planos")}
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              className="bg-primary hover:bg-primary/90 text-white font-display text-xl md:text-2xl font-bold px-10 md:px-14 py-5 rounded-xl transition-colors uppercase tracking-widest w-full sm:w-auto"
-              style={{ boxShadow: "0 0 50px rgba(225,6,0,0.5), 0 0 100px rgba(225,6,0,0.2)" }}
-            >
-              Garanta Seu BoxLab
-            </motion.button>
           </motion.div>
         </div>
       </section>
