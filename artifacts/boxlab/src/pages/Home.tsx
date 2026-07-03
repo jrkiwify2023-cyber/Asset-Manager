@@ -600,7 +600,7 @@ export default function Home() {
                     data-testid="btn-basico"
                     className="block w-full text-center border-2 border-primary text-primary hover:bg-primary hover:text-white font-display font-bold text-lg uppercase tracking-widest py-4 rounded-xl transition-all duration-300"
                   >
-                    Quero o Plano Básico
+                    Quero Comprar
                   </button>
                 </div>
               </PendulumCard>
@@ -667,7 +667,7 @@ export default function Home() {
                   <a href={CHECKOUT_URL_PREMIUM} data-testid="btn-premium"
                     className="block text-center font-display font-bold text-xl uppercase tracking-widest py-5 rounded-xl transition-all duration-300 hover:scale-105"
                     style={{ background: "linear-gradient(135deg,#d4af37,#f0d060,#d4af37)", color: "#000", boxShadow: "0 0 30px rgba(212,175,55,0.4)" }}>
-                    Quero o Premium
+                    Quero Comprar
                   </a>
                   <p className="text-center text-accent/50 text-xs font-bold mt-4 uppercase tracking-widest">Melhor Custo-Benefício</p>
                 </div>
