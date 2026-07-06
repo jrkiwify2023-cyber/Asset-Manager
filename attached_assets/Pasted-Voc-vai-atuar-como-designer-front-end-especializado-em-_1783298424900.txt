@@ -1,0 +1,54 @@
+Você vai atuar como designer front-end especializado em landing pages de alta conversão para infoprodutos. 
+
+O site atual do projeto "BoxLab" está funcional, mas com visual básico/genérico. Quero elevar o nível de design para transmitir mais profissionalismo e credibilidade, sem alterar textos, copy, links de pagamento ou lógica de funcionamento (pixel, checkout, etc).
+
+Aplique as seguintes melhorias DIRETO NO CÓDIGO:
+
+## 1. TIPOGRAFIA
+- Substitua fontes padrão/genéricas por uma combinação mais profissional: uma fonte de destaque mais impactante para títulos (ex: uma sans-serif bold/condensada, estilo usado em marcas esportivas) e uma fonte legível e moderna para o corpo do texto.
+- Ajuste hierarquia visual: títulos maiores e com mais peso, subtítulos com espaçamento adequado, texto de corpo com boa altura de linha (line-height 1.5-1.6).
+- Use Google Fonts ou fontes já disponíveis no projeto, sem dependências externas pesadas.
+
+## 2. PALETA DE CORES
+- Refine a paleta de cores para algo mais coeso e com identidade (a temática é boxe, então pode explorar tons como preto, vermelho intenso, ou dourado/amarelo combinado com preto — remetendo a ringue, luta, força).
+- Garanta contraste adequado entre texto e fundo (acessibilidade).
+- Use uma cor de destaque única e consistente para todos os botões de CTA (ex: vermelho ou amarelo vibrante), diferenciando claramente do restante da paleta.
+
+## 3. ESPAÇAMENTO E LAYOUT
+- Aumente o espaçamento (padding/margin) entre seções para o layout "respirar" mais — sites básicos costumam ter elementos grudados.
+- Centralize e alinhe melhor os blocos de conteúdo, garantindo grid consistente (uso de flexbox/grid).
+- Adicione mais respiro interno nos cards (planos, depoimentos, FAQ).
+
+## 4. CARDS DE PLANOS (BÁSICO E PREMIUM)
+- Dê mais destaque visual ao card do Plano Premium (já que é o "mais escolhido"): borda diferenciada, sombra mais pronunciada, ou leve efeito de destaque (ex: escala levemente maior ou cor de fundo diferente).
+- Adicione ícones consistentes ao lado de cada item de benefício dentro dos cards (check verde, por exemplo) ao invés de apenas texto corrido.
+- Suavize as bordas dos cards (border-radius) para um visual mais moderno.
+
+## 5. BOTÕES DE CTA
+- Redesenhe os botões com: cantos arredondados, leve sombra (box-shadow), efeito de hover suave (mudança de cor ou leve elevação), e tamanho generoso (fácil de clicar no mobile).
+- Mantenha o texto do botão EXATAMENTE como está — não altere nenhuma palavra, apenas o visual/estilo.
+
+## 6. SEÇÃO DE DEPOIMENTOS
+- Transforme os depoimentos em cards com leve sombra, avatar/ícone de perfil (pode ser um ícone genérico de pessoa se não houver foto real), e aspas estilizadas de destaque.
+- Adicione estrelas de avaliação (5 estrelas) acima de cada depoimento para reforço visual de satisfação.
+
+## 7. SEÇÃO DE GARANTIA
+- Dê mais destaque visual ao selo "7 Dias de Garantia" — pode ser um badge circular ou ícone de escudo, com cor de destaque, para parecer um selo de confiança real.
+
+## 8. TIMER DE URGÊNCIA
+- Redesenhe visualmente o timer para parecer mais um componente "sério" (números grandes, fundo escuro com números em destaque, como um placar/cronômetro esportivo) ao invés de um contador simples de texto.
+
+## 9. RESPONSIVIDADE
+- Confirme que todas essas melhorias visuais funcionam perfeitamente em mobile (a maioria do tráfego de anúncio vem de celular). Teste especialmente: tamanho de fonte, espaçamento dos cards, e botões fáceis de tocar.
+
+## 10. CONSISTÊNCIA GERAL
+- Garanta que cores, fontes, espaçamentos e estilos de botão sejam consistentes em TODAS as seções da página (não deixe uma seção com estilo diferente da outra).
+
+## RESTRIÇÕES IMPORTANTES
+- NÃO altere nenhum texto, copy, ou conteúdo das seções.
+- NÃO altere o texto dos botões de CTA (deve continuar idêntico em todos os pontos, por causa do rastreamento do pixel).
+- NÃO altere links de pagamento, wiapy, ou scripts de pixel/rastreamento (Meta/Google Ads).
+- NÃO altere a ordem ou estrutura das seções.
+- Foque 100% em CSS/estilo visual, não em conteúdo ou funcionalidade.
+
+Ao final, me mostre um resumo das mudanças visuais aplicadas e rode o preview para eu conferir antes de você finalizar.
