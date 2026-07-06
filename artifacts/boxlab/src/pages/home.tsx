@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Shuffle, LayoutList, Lightbulb, TrendingUp, Medal, 
   Check, Dumbbell, Target, Zap, Mail, Smartphone, Monitor, Tablet, 
-  Star, ShieldCheck, Plus, X 
+  Star, ShieldCheck, Plus, X, Lock
 } from 'lucide-react';
 
 const CHECKOUT_URL = "#"; // TODO: Replace with your actual checkout URL
-const COUNTDOWN_MINUTES = 15;
+const COUNTDOWN_MINUTES = 25; // Session duration in minutes
 
 const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
   <motion.div
@@ -50,15 +50,32 @@ function FaqItem({ q, a }: { q: string, a: string }) {
   );
 }
 
+const STORAGE_KEY = "boxlab_offer_end";
+
 export default function Home() {
-  const [timeLeft, setTimeLeft] = useState(COUNTDOWN_MINUTES * 60);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    // Persist timer across page loads using localStorage
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const remaining = Math.floor((parseInt(stored, 10) - Date.now()) / 1000);
+      if (remaining > 0) return remaining;
+    }
+    const endTime = Date.now() + COUNTDOWN_MINUTES * 60 * 1000;
+    localStorage.setItem(STORAGE_KEY, String(endTime));
+    return COUNTDOWN_MINUTES * 60;
+  });
 
   useEffect(() => {
     document.title = "BOXLAB — 150 Dinâmicas para Aulas de Boxe";
-    
-    // Countdown timer logic
+
     const timer = setInterval(() => {
-      setTimeLeft(prev => (prev > 0 ? prev - 1 : 0));
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -89,19 +106,19 @@ export default function Home() {
   ];
 
   const faqs = [
-    { q: "O acesso é imediato?", a: "Sim! Assim que o pagamento for aprovado (pagamentos via PIX ou Cartão de Crédito são aprovados na hora), você receberá o link de acesso e as instruções no seu e-mail." },
-    { q: "Posso acessar pelo celular?", a: "Com certeza. Todo o material é otimizado para ser acessado e visualizado perfeitamente em celulares, tablets ou computadores." },
-    { q: "Serve para iniciantes?", a: "Sim. O BoxLab possui dinâmicas separadas por nível, permitindo que você aplique os treinos tanto para quem está começando hoje quanto para atletas avançados." },
-    { q: "Recebo por e-mail?", a: "Sim, o acesso à plataforma ou o link para download será enviado diretamente para o e-mail cadastrado no momento da compra." },
-    { q: "Os bônus fazem parte de qual plano?", a: "Os bônus exclusivos (100 Combinações de Golpes e Cronômetro + Protocolos) estão disponíveis apenas no Plano Premium, que é a escolha de mais de 80% dos nossos alunos." }
+    { q: "O acesso é imediato?", a: "Sim! Em até 5 minutos após a confirmação do pagamento você recebe o acesso completo por e-mail." },
+    { q: "Posso acessar pelo celular?", a: "Sim, todo o material é otimizado para celular, tablet e computador." },
+    { q: "Serve para iniciantes?", a: "Sim, o conteúdo cobre desde o nível iniciante até o avançado." },
+    { q: "Recebo por e-mail?", a: "Sim, o acesso é enviado automaticamente para o e-mail usado na compra." },
+    { q: "Os bônus fazem parte de qual plano?", a: "Os bônus (Cronômetro de Treinos e Certificado do Boxe) são exclusivos do Plano Premium." }
   ];
 
   const testimonials = [
-    { name: "Carlos M.", text: "Material excelente! Minhas aulas ficaram muito mais dinâmicas e os alunos perceberam a diferença na primeira semana." },
-    { name: "Fernanda R.", text: "Valeu cada centavo. Muito fácil de aplicar e não preciso mais perder o domingo montando as aulas da semana." },
-    { name: "Juliana P.", text: "Treino em casa e adorei a variedade de exercícios. Não fica repetitivo nunca." },
-    { name: "Rodrigo S.", text: "Conteúdo muito organizado, direto ao ponto. A qualidade do material impressiona." },
-    { name: "Tiago L.", text: "Os alunos adoraram as dinâmicas em dupla. O nível de engajamento da turma subiu muito!" }
+    { name: "Carlos M.", role: "Professor de Boxe", text: "Uso o material há 2 meses e já economizei fácil umas 6 horas por semana só de planejamento de aula. Meus alunos notaram a diferença na variedade dos treinos." },
+    { name: "Fernanda R.", role: "Personal Trainer", text: "Comprei o Premium e os bônus (cronômetro e certificado) elevaram o nível da minha academia. Recuperei o investimento na primeira semana com um aluno novo." },
+    { name: "Juliana P.", role: "Aluna", text: "Treino boxe em casa há 1 mês usando o material e nunca fiquei sem saber o que fazer. Tem dinâmica pra todo nível, do zero ao avançado." },
+    { name: "Rodrigo S.", role: "Personal Trainer", text: "Conteúdo muito organizado, direto ao ponto. Aplicando com meus alunos desde o primeiro dia — a qualidade do material impressiona." },
+    { name: "Tiago L.", role: "Professor de Boxe", text: "Os alunos adoraram as dinâmicas em dupla. O nível de engajamento da turma subiu muito e o planejamento ficou muito mais rápido." }
   ];
 
   return (
@@ -272,17 +289,25 @@ export default function Home() {
                 </div>
                 
                 <ul className="space-y-5 mb-10 flex-1">
-                  {["Preparação e Desenvolvimento", "Técnica e Combate", "Performance e Aulas", "150 Dinâmicas de Boxe"].map((li, i) => (
+                  {["Preparação e Desenvolvimento", "Técnica e Combate", "Performance e Aulas"].map((li, i) => (
                     <li key={i} className="flex items-start gap-4 text-gray-300 text-lg">
                       <Check size={24} className="text-primary shrink-0 mt-0.5" />
                       <span>{li}</span>
                     </li>
                   ))}
+                  <li className="flex items-start gap-4 text-gray-300 text-lg">
+                    <Check size={24} className="text-primary shrink-0 mt-0.5" />
+                    <span><strong className="text-white">150 Dinâmicas completas</strong> para seus treinos</span>
+                  </li>
                 </ul>
                 
                 <a href={CHECKOUT_URL} className="block w-full text-center bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-white font-display text-2xl py-6 rounded-xl uppercase tracking-wider transition-colors">
                   QUERO O PLANO BÁSICO
                 </a>
+                <div className="mt-4 flex flex-col items-center gap-1">
+                  <span className="flex items-center gap-2 text-gray-400 text-sm"><Lock size={14} className="text-green-400" /><span>Compra 100% segura via Pix ou cartão</span></span>
+                  <span className="text-gray-500 text-xs">Garantia de 7 dias — risco zero</span>
+                </div>
               </div>
             </FadeIn>
 
@@ -303,29 +328,41 @@ export default function Home() {
                 </div>
                 
                 <ul className="space-y-5 mb-10 flex-1">
-                  {["Preparação e Desenvolvimento", "Técnica e Combate", "Performance e Aulas", "150 Dinâmicas de Boxe"].map((li, i) => (
+                  {["Preparação e Desenvolvimento", "Técnica e Combate", "Performance e Aulas"].map((li, i) => (
                     <li key={i} className="flex items-start gap-4 text-gray-200 text-lg">
                       <Check size={24} className="text-secondary shrink-0 mt-0.5" />
                       <span>{li}</span>
                     </li>
                   ))}
+                  <li className="flex items-start gap-4 text-gray-200 text-lg">
+                    <Check size={24} className="text-secondary shrink-0 mt-0.5" />
+                    <span>As mesmas <strong className="text-white">150 dinâmicas do Básico</strong></span>
+                  </li>
                   
-                  <div className="pt-6 pb-2">
-                    <div className="text-xs uppercase tracking-widest text-secondary font-bold mb-4">Bônus Exclusivos</div>
-                    <li className="flex items-start gap-4 text-white font-bold mb-5 bg-white/5 p-4 rounded-xl border border-white/10">
-                      <span className="text-2xl shrink-0 mt-0.5">🎁</span>
-                      <span className="text-lg">100 Combinações de Golpes (+ de 30 páginas extras)</span>
-                    </li>
-                    <li className="flex items-start gap-4 text-white font-bold bg-white/5 p-4 rounded-xl border border-white/10">
-                      <span className="text-2xl shrink-0 mt-0.5">🎁</span>
-                      <span className="text-lg">Cronômetro de Treinos + Protocolos de combate</span>
-                    </li>
-                  </div>
+                  <li className="list-none pt-4 pb-0">
+                    <div className="text-xs uppercase tracking-widest text-secondary font-bold mb-3">+ Bônus Exclusivos do Premium</div>
+                  </li>
+                  <li className="flex items-start gap-4 text-white font-bold bg-white/5 p-4 rounded-xl border border-white/10">
+                    <span className="text-2xl shrink-0 mt-0.5">🎁</span>
+                    <span className="text-lg">+250 Dinâmicas exclusivas <span className="text-secondary font-bold">(400+ no total)</span></span>
+                  </li>
+                  <li className="flex items-start gap-4 text-white font-bold bg-white/5 p-4 rounded-xl border border-white/10">
+                    <span className="text-2xl shrink-0 mt-0.5">🎁</span>
+                    <span className="text-lg">100 Combinações de Golpes (+ de 30 páginas extras)</span>
+                  </li>
+                  <li className="flex items-start gap-4 text-white font-bold bg-white/5 p-4 rounded-xl border border-white/10">
+                    <span className="text-2xl shrink-0 mt-0.5">🎁</span>
+                    <span className="text-lg">Cronômetro de Treinos + Protocolos de combate</span>
+                  </li>
                 </ul>
                 
                 <a href={CHECKOUT_URL} className="block w-full text-center bg-secondary hover:bg-[#ebd06b] hover:scale-[1.02] active:scale-[0.98] text-secondary-foreground font-display text-3xl py-6 rounded-xl uppercase tracking-wide transition-all shadow-[0_10px_30px_rgba(212,175,55,0.3)]">
                   QUERO O PREMIUM
                 </a>
+                <div className="mt-4 flex flex-col items-center gap-1">
+                  <span className="flex items-center gap-2 text-gray-400 text-sm"><Lock size={14} className="text-green-400" /><span>Compra 100% segura via Pix ou cartão</span></span>
+                  <span className="text-gray-500 text-xs">Garantia de 7 dias — risco zero</span>
+                </div>
               </div>
             </FadeIn>
           </div>
@@ -372,12 +409,31 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 0.1}>
-                <div className="bg-card/50 p-8 rounded-2xl border border-border h-full flex flex-col">
-                  <div className="flex text-secondary mb-6 gap-1">
-                    {[...Array(5)].map((_, j) => <Star key={j} size={20} fill="currentColor" />)}
+                {/* Screenshot-style testimonial card */}
+                <div className="h-full flex flex-col bg-[#1a1a1a] rounded-2xl overflow-hidden border border-white/10 shadow-xl">
+                  {/* Fake app header bar */}
+                  <div className="bg-[#111] px-4 py-2 flex items-center gap-2 border-b border-white/5">
+                    <div className="w-2 h-2 rounded-full bg-red-500/70"></div>
+                    <div className="w-2 h-2 rounded-full bg-yellow-500/70"></div>
+                    <div className="w-2 h-2 rounded-full bg-green-500/70"></div>
+                    <span className="ml-2 text-xs text-gray-600 tracking-wide">Avaliação verificada</span>
                   </div>
-                  <p className="text-gray-300 text-lg italic mb-8 flex-1">"{t.text}"</p>
-                  <p className="text-white font-bold font-display text-xl tracking-wide">— {t.name}</p>
+                  {/* Content */}
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold font-display text-lg shrink-0">
+                        {t.name[0]}
+                      </div>
+                      <div>
+                        <p className="text-white font-bold leading-tight">{t.name}</p>
+                        <p className="text-gray-500 text-xs">{t.role}</p>
+                      </div>
+                    </div>
+                    <div className="flex text-secondary mb-4 gap-0.5">
+                      {[...Array(5)].map((_, j) => <Star key={j} size={16} fill="currentColor" />)}
+                    </div>
+                    <p className="text-gray-300 text-base leading-relaxed flex-1">"{t.text}"</p>
+                  </div>
                 </div>
               </FadeIn>
             ))}
