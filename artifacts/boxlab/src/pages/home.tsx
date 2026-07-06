@@ -14,29 +14,44 @@ const CHECKOUT_SPECIAL = "https://pay.wiapy.com/Mz09YCSscIRi";
 const COUNTDOWN_MINUTES = 25;
 const STORAGE_KEY = "boxlab_offer_end";
 
-// ── Helpers ────────────────────────────────────────────────────────
-const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
+// ── Animation wrapper ──────────────────────────────────────────────
+const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 24 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-50px" }}
-    transition={{ duration: 0.6, delay }}
+    transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
   >
     {children}
   </motion.div>
 );
 
-function FaqItem({ q, a }: { q: string, a: string }) {
+// ── Section heading helper ─────────────────────────────────────────
+function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: React.ReactNode; sub?: string }) {
+  return (
+    <div className="text-center mb-16 md:mb-20">
+      <span className="eyebrow">{eyebrow}</span>
+      <div className="section-accent" />
+      <h2 className="font-display text-5xl md:text-6xl text-white mb-4 leading-none">{title}</h2>
+      {sub && <p className="text-muted-foreground text-xl leading-relaxed max-w-2xl mx-auto">{sub}</p>}
+    </div>
+  );
+}
+
+// ── FAQ item ───────────────────────────────────────────────────────
+function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-border">
-      <button 
+    <div className="border-b border-border last:border-0">
+      <button
         className="w-full flex justify-between items-center py-6 text-left focus:outline-none group"
         onClick={() => setOpen(!open)}
       >
-        <span className="font-medium text-lg text-white group-hover:text-primary transition-colors pr-8">{q}</span>
-        <div className="text-muted-foreground shrink-0 transition-transform duration-300">
-          {open ? <X size={24} className="text-primary" /> : <Plus size={24} />}
+        <span className="font-semibold text-lg text-white group-hover:text-primary transition-colors pr-8 leading-snug">
+          {q}
+        </span>
+        <div className="shrink-0 w-8 h-8 rounded-full border border-border group-hover:border-primary/50 flex items-center justify-center transition-colors">
+          {open ? <X size={16} className="text-primary" /> : <Plus size={16} className="text-muted-foreground" />}
         </div>
       </button>
       <AnimatePresence>
@@ -48,7 +63,7 @@ function FaqItem({ q, a }: { q: string, a: string }) {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-gray-400 leading-relaxed">{a}</p>
+            <p className="pb-6 text-gray-400 leading-[1.7] text-base">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -56,12 +71,12 @@ function FaqItem({ q, a }: { q: string, a: string }) {
   );
 }
 
-/** Scoreboard-style digit block */
+// ── Scoreboard digit block ─────────────────────────────────────────
 function DigitBlock({ value }: { value: string }) {
   return (
-    <div className="w-14 h-16 sm:w-20 sm:h-22 bg-black border border-white/15 rounded-lg flex items-center justify-center shadow-[inset_0_2px_8px_rgba(0,0,0,0.8),0_1px_0_rgba(255,255,255,0.05)] relative overflow-hidden">
-      {/* subtle top gloss */}
+    <div className="w-14 h-16 sm:w-20 sm:h-[5.5rem] bg-black border border-white/15 rounded-xl flex items-center justify-center shadow-[inset_0_2px_8px_rgba(0,0,0,0.8),0_1px_0_rgba(255,255,255,0.05)] relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/6" />
       <span className="font-display text-4xl sm:text-5xl text-white tabular-nums leading-none relative z-10">{value}</span>
     </div>
   );
@@ -76,7 +91,7 @@ function Scoreboard({ seconds }: { seconds: number }) {
         <DigitBlock value={m[0]} />
         <DigitBlock value={m[1]} />
       </div>
-      <span className="font-display text-4xl sm:text-5xl text-white/50 pb-1 leading-none">:</span>
+      <span className="font-display text-4xl sm:text-5xl text-white/40 pb-1 leading-none select-none">:</span>
       <div className="flex gap-1.5">
         <DigitBlock value={s[0]} />
         <DigitBlock value={s[1]} />
@@ -85,7 +100,7 @@ function Scoreboard({ seconds }: { seconds: number }) {
   );
 }
 
-// ── Data ───────────────────────────────────────────────────────────
+// ── Page ───────────────────────────────────────────────────────────
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -105,12 +120,8 @@ export default function Home() {
 
     const timer = setInterval(() => {
       const remaining = Math.floor((endTime - Date.now()) / 1000);
-      if (remaining <= 0) {
-        clearInterval(timer);
-        setTimeLeft(0);
-      } else {
-        setTimeLeft(remaining);
-      }
+      if (remaining <= 0) { clearInterval(timer); setTimeLeft(0); }
+      else setTimeLeft(remaining);
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -121,70 +132,71 @@ export default function Home() {
   };
 
   const benefits = [
-    { icon: Clock, title: "Economize horas", desc: "planejando treinos" },
-    { icon: Shuffle, title: "Nunca mais repita", desc: "os mesmos exercícios" },
-    { icon: LayoutList, title: "Aulas mais", desc: "organizadas" },
-    { icon: Lightbulb, title: "Mais criatividade", desc: "para seus alunos" },
-    { icon: TrendingUp, title: "Conteúdo para", desc: "todos os níveis" },
-    { icon: Medal, title: "Material", desc: "profissional" },
+    { icon: Clock,      title: "Economize horas",    desc: "planejando treinos" },
+    { icon: Shuffle,    title: "Nunca mais repita",   desc: "os mesmos exercícios" },
+    { icon: LayoutList, title: "Aulas mais",          desc: "organizadas" },
+    { icon: Lightbulb,  title: "Mais criatividade",   desc: "para seus alunos" },
+    { icon: TrendingUp, title: "Conteúdo para",       desc: "todos os níveis" },
+    { icon: Medal,      title: "Material",            desc: "profissional" },
   ];
 
   const targets = [
-    "Professores de Boxe", "Personal Trainers", "Academias", 
-    "Projetos Sociais", "Pessoas que treinam em casa", "Iniciantes"
+    "Professores de Boxe", "Personal Trainers", "Academias",
+    "Projetos Sociais", "Pessoas que treinam em casa", "Iniciantes",
   ];
 
   const faqs = [
-    { q: "O acesso é imediato?", a: "Sim! Em até 5 minutos após a confirmação do pagamento você recebe o acesso completo por e-mail." },
-    { q: "Posso acessar pelo celular?", a: "Sim, todo o material é otimizado para celular, tablet e computador." },
-    { q: "Serve para iniciantes?", a: "Sim, o conteúdo cobre desde o nível iniciante até o avançado." },
-    { q: "Recebo por e-mail?", a: "Sim, o acesso é enviado automaticamente para o e-mail usado na compra." },
-    { q: "Os bônus fazem parte de qual plano?", a: "Os bônus (Cronômetro de Treinos e Certificado do Boxe) são exclusivos do Plano Premium." }
+    { q: "O acesso é imediato?",               a: "Sim! Em até 5 minutos após a confirmação do pagamento você recebe o acesso completo por e-mail." },
+    { q: "Posso acessar pelo celular?",         a: "Sim, todo o material é otimizado para celular, tablet e computador." },
+    { q: "Serve para iniciantes?",              a: "Sim, o conteúdo cobre desde o nível iniciante até o avançado." },
+    { q: "Recebo por e-mail?",                  a: "Sim, o acesso é enviado automaticamente para o e-mail usado na compra." },
+    { q: "Os bônus fazem parte de qual plano?", a: "Os bônus (Cronômetro de Treinos e Certificado do Boxe) são exclusivos do Plano Premium." },
   ];
 
   const testimonials = [
-    { name: "Carlos M.", role: "Professor de Boxe", text: "Uso o material há 2 meses e já economizei fácil umas 6 horas por semana só de planejamento de aula. Meus alunos notaram a diferença na variedade dos treinos." },
-    { name: "Fernanda R.", role: "Personal Trainer", text: "Comprei o Premium e os bônus (cronômetro e certificado) elevaram o nível da minha academia. Recuperei o investimento na primeira semana com um aluno novo." },
-    { name: "Juliana P.", role: "Aluna", text: "Treino boxe em casa há 1 mês usando o material e nunca fiquei sem saber o que fazer. Tem dinâmica pra todo nível, do zero ao avançado." },
-    { name: "Rodrigo S.", role: "Personal Trainer", text: "Conteúdo muito organizado, direto ao ponto. Aplicando com meus alunos desde o primeiro dia — a qualidade do material impressiona." },
-    { name: "Tiago L.", role: "Professor de Boxe", text: "Os alunos adoraram as dinâmicas em dupla. O nível de engajamento da turma subiu muito e o planejamento ficou muito mais rápido." }
+    { name: "Carlos M.",  role: "Professor de Boxe", text: "Uso o material há 2 meses e já economizei fácil umas 6 horas por semana só de planejamento de aula. Meus alunos notaram a diferença na variedade dos treinos." },
+    { name: "Fernanda R.", role: "Personal Trainer",  text: "Comprei o Premium e os bônus (cronômetro e certificado) elevaram o nível da minha academia. Recuperei o investimento na primeira semana com um aluno novo." },
+    { name: "Juliana P.", role: "Aluna",              text: "Treino boxe em casa há 1 mês usando o material e nunca fiquei sem saber o que fazer. Tem dinâmica pra todo nível, do zero ao avançado." },
+    { name: "Rodrigo S.", role: "Personal Trainer",   text: "Conteúdo muito organizado, direto ao ponto. Aplicando com meus alunos desde o primeiro dia — a qualidade do material impressiona." },
+    { name: "Tiago L.",  role: "Professor de Boxe",  text: "Os alunos adoraram as dinâmicas em dupla. O nível de engajamento da turma subiu muito e o planejamento ficou muito mais rápido." },
   ];
 
-  // ── Render ─────────────────────────────────────────────────────
+  // ── Render ──────────────────────────────────────────────────────
   return (
     <div className="bg-noise min-h-screen">
-      
-      {/* 1. Header / Hero */}
-      <section className="relative min-h-[90vh] flex items-center justify-center pt-24 pb-16 px-4 overflow-hidden border-b border-border">
+
+      {/* ─── 1. HERO ─────────────────────────────────────────────── */}
+      <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 px-5 overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0 bg-black">
-          <img 
-            src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop" 
-            alt="Boxer training" 
+          <img
+            src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop"
+            alt="Boxer training"
             className="w-full h-full object-cover object-top opacity-30 mix-blend-luminosity"
-            loading="lazy"
+            loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background" />
         </div>
-        
+
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h2 className="text-primary font-display text-2xl md:text-3xl tracking-widest mb-6">BOXLAB</h2>
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-display text-white mb-6 leading-[0.9] uppercase drop-shadow-2xl">
-              150 Dinâmicas <br/>
+            <p className="eyebrow justify-center">BOXLAB</p>
+            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[7rem] font-display text-white mb-6 leading-[0.92] uppercase drop-shadow-2xl">
+              150 Dinâmicas <br />
               <span className="text-primary">para Aulas de Boxe</span>
             </h1>
-            <p className="text-lg md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-[1.65]">
               Transforme seus treinos com uma biblioteca completa de dinâmicas prontas para professores, academias e pessoas que desejam aprender Boxe em casa.
             </p>
-            
-            <a 
-              href="#planos" 
+
+            {/* Pulse CTA */}
+            <a
+              href="#planos"
               onClick={scrollToPricing}
-              className="inline-block bg-primary hover:bg-primary/90 text-white font-display text-3xl px-12 py-6 rounded-xl uppercase tracking-wide transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(225,6,0,0.5)] hover:shadow-[0_0_60px_rgba(225,6,0,0.7)]"
+              className="cta-pulse inline-block bg-primary hover:bg-[#c50500] text-white font-display text-2xl sm:text-3xl px-10 sm:px-14 py-5 sm:py-7 rounded-2xl uppercase tracking-wide transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(225,6,0,0.45)]"
             >
               QUERO MEU ACESSO AGORA
             </a>
@@ -192,19 +204,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Benefits */}
-      <section className="py-28 px-4 bg-background relative z-10">
+      {/* ─── 2. BENEFÍCIOS ───────────────────────────────────────── */}
+      <section className="py-28 px-5 bg-background relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {benefits.map((b, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div className="bg-card/50 backdrop-blur-sm border border-card-border p-8 rounded-2xl flex items-start gap-5 hover:border-primary/50 hover:bg-card transition-all duration-300 hover:-translate-y-1 shadow-lg">
-                  <div className="bg-primary/10 p-4 rounded-xl text-primary shrink-0">
-                    <b.icon size={32} />
+              <FadeIn key={i} delay={i * 0.08}>
+                <div className="card-lift bg-card/60 backdrop-blur-sm border border-card-border p-7 md:p-8 rounded-2xl flex items-start gap-5 hover:border-primary/40 hover:bg-card shadow-lg h-full">
+                  <div className="bg-primary/10 p-4 rounded-xl text-primary shrink-0 border border-primary/15">
+                    <b.icon size={30} strokeWidth={1.8} />
                   </div>
                   <div>
-                    <h3 className="text-white font-bold text-xl mb-1 leading-snug">{b.title}</h3>
-                    <p className="text-muted-foreground text-lg leading-relaxed">{b.desc}</p>
+                    <h3 className="text-white font-bold text-xl mb-1 leading-tight">{b.title}</h3>
+                    <p className="text-muted-foreground text-base leading-relaxed">{b.desc}</p>
                   </div>
                 </div>
               </FadeIn>
@@ -213,16 +225,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. Para Quem É */}
-      <section className="py-24 px-4 bg-card/30 border-y border-border">
+      {/* ─── 3. PARA QUEM É ──────────────────────────────────────── */}
+      <section className="py-24 px-5 bg-card/30 border-y border-border">
         <div className="max-w-5xl mx-auto text-center">
           <FadeIn>
-            <h2 className="font-display text-4xl md:text-5xl text-white mb-12">Para Quem É o BoxLab?</h2>
-            <div className="flex flex-wrap justify-center gap-4">
+            <SectionHead eyebrow="Público-alvo" title="Para Quem É o BoxLab?" />
+            <div className="flex flex-wrap justify-center gap-3 md:gap-4">
               {targets.map((t, i) => (
-                <div key={i} className="flex items-center gap-3 bg-card border border-border hover:border-primary/50 transition-colors px-6 py-4 rounded-full shadow-md">
-                  <Check className="text-primary shrink-0" size={22} strokeWidth={3} />
-                  <span className="text-white font-semibold text-lg">{t}</span>
+                <div
+                  key={i}
+                  className="flex items-center gap-2.5 bg-card border border-border hover:border-primary/50 hover:bg-card/80 transition-all px-5 py-3.5 rounded-full shadow-md"
+                >
+                  <Check className="text-primary shrink-0" size={18} strokeWidth={3} />
+                  <span className="text-white font-semibold text-base md:text-lg">{t}</span>
                 </div>
               ))}
             </div>
@@ -230,41 +245,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. O Que Você Recebe */}
-      <section className="py-32 px-4 bg-background relative">
+      {/* ─── 4. O QUE VOCÊ RECEBE ────────────────────────────────── */}
+      <section className="py-32 px-5 bg-background relative">
         <div className="max-w-6xl mx-auto">
           <FadeIn>
-            <div className="text-center mb-20">
-              <h2 className="font-display text-5xl md:text-6xl text-white mb-4">O Que Você Recebe</h2>
-              <p className="text-muted-foreground text-xl">Um arsenal completo de treinos divididos em 3 pilares</p>
-            </div>
+            <SectionHead
+              eyebrow="Conteúdo"
+              title="O Que Você Recebe"
+              sub="Um arsenal completo de treinos divididos em 3 pilares"
+            />
           </FadeIn>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {/* Central Badge */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col items-center justify-center w-40 h-40 bg-primary text-white font-display text-3xl leading-none text-center rounded-full border-8 border-background shadow-[0_0_40px_rgba(225,6,0,0.4)]">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-7 relative">
+            {/* Central badge — desktop only */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col items-center justify-center w-40 h-40 bg-primary text-white font-display text-3xl leading-none text-center rounded-full border-8 border-background shadow-[0_0_50px_rgba(225,6,0,0.45)]">
               <span>150</span>
-              <span className="text-lg mt-1 tracking-wider">DINÂMICAS</span>
+              <span className="text-base mt-1 tracking-wider">DINÂMICAS</span>
             </div>
 
             {[
               { title: "Preparação e Desenvolvimento", icon: Dumbbell, img: "https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=800&auto=format&fit=crop" },
-              { title: "Técnica e Combate", icon: Target, img: "https://images.unsplash.com/photo-1591504770054-c9b2ccab72f5?q=80&w=800&auto=format&fit=crop" },
-              { title: "Performance e Aulas", icon: Zap, img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop" }
+              { title: "Técnica e Combate",            icon: Target,   img: "https://images.unsplash.com/photo-1591504770054-c9b2ccab72f5?q=80&w=800&auto=format&fit=crop" },
+              { title: "Performance e Aulas",          icon: Zap,      img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop" },
             ].map((item, i) => (
               <FadeIn key={i} delay={i * 0.15}>
-                <div className="bg-card rounded-3xl overflow-hidden border border-border group shadow-xl">
+                <div className="card-lift bg-card rounded-3xl overflow-hidden border border-border shadow-xl group">
                   <div className="h-64 relative overflow-hidden bg-black">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 group-hover:via-black/40 transition-colors"></div>
-                    <img src={item.img} alt={item.title} className="w-full h-full object-cover opacity-80 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700" loading="lazy" />
-                    <div className="absolute bottom-6 left-6 z-20 flex items-center gap-4">
-                      <div className="bg-primary p-3 rounded-lg text-white">
-                        <item.icon size={28} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 group-hover:via-black/40 transition-colors" />
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      className="w-full h-full object-cover opacity-80 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700"
+                      loading="lazy"
+                    />
+                    <div className="absolute bottom-6 left-6 z-20">
+                      <div className="bg-primary p-3 rounded-xl text-white shadow-lg">
+                        <item.icon size={28} strokeWidth={2} />
                       </div>
                     </div>
                   </div>
                   <div className="p-8">
-                    <h3 className="font-display text-3xl text-white tracking-wide">{item.title}</h3>
+                    <h3 className="font-display text-3xl text-white tracking-wide leading-tight">{item.title}</h3>
                   </div>
                 </div>
               </FadeIn>
@@ -273,141 +294,168 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Special Offer + Countdown Timer */}
-      <section className="bg-primary py-14 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop')] opacity-10 mix-blend-multiply bg-cover bg-center"></div>
+      {/* ─── 5. OFERTA ESPECIAL + TIMER ──────────────────────────── */}
+      <section className="bg-primary py-14 px-5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop')] opacity-10 mix-blend-multiply bg-cover bg-center" />
+        {/* Diagonal stripe overlay */}
+        <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "repeating-linear-gradient(45deg,#000 0,#000 1px,transparent 0,transparent 50%)", backgroundSize: "10px 10px" }} />
+
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
-          {/* Left: text */}
+          {/* Left */}
           <div className="text-center md:text-left">
             <h3 className="font-display text-4xl md:text-5xl text-white mb-3 uppercase flex items-center justify-center md:justify-start gap-3">
-              <span className="text-4xl">🔥</span> Oferta Especial
+              <span>🔥</span> Oferta Especial
             </h3>
-            <p className="text-white/90 font-medium text-lg mb-5 max-w-sm">Após o término da oferta os valores poderão ser alterados.</p>
+            <p className="text-white/85 font-medium text-lg mb-6 max-w-sm leading-relaxed">
+              Após o término da oferta os valores poderão ser alterados.
+            </p>
             <a
               href={CHECKOUT_SPECIAL}
-              className="inline-block bg-white text-primary font-display text-xl px-8 py-4 rounded-xl uppercase tracking-widest hover:bg-white/90 hover:scale-105 active:scale-95 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
+              className="inline-block bg-white text-primary font-display text-xl px-9 py-4 rounded-xl uppercase tracking-widest hover:bg-white/92 hover:scale-105 active:scale-95 transition-all shadow-[0_6px_24px_rgba(0,0,0,0.3)]"
             >
               APROVEITAR AGORA
             </a>
           </div>
-          
-          {/* Right: scoreboard timer */}
+
+          {/* Right — scoreboard */}
           <div className="flex flex-col items-center gap-3">
-            <div className="text-xs text-white/60 font-bold uppercase tracking-widest mb-1">Encerra em</div>
-            <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl px-6 py-5 shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
+            <p className="text-xs text-white/55 font-bold uppercase tracking-widest">Encerra em</p>
+            <div className="bg-[#080808] border border-white/10 rounded-2xl px-6 py-5 shadow-[0_12px_50px_rgba(0,0,0,0.6)]">
               <Scoreboard seconds={timeLeft} />
             </div>
-            <div className="flex gap-8 text-center">
-              <span className="text-white/50 text-xs uppercase tracking-widest">Minutos</span>
-              <span className="text-white/50 text-xs uppercase tracking-widest">Segundos</span>
+            <div className="flex gap-10">
+              <span className="text-white/45 text-xs uppercase tracking-widest">Minutos</span>
+              <span className="text-white/45 text-xs uppercase tracking-widest">Segundos</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. Planos (Pricing) */}
-      <section id="planos" className="py-32 px-4 bg-background">
+      {/* ─── 6. PLANOS ───────────────────────────────────────────── */}
+      <section id="planos" className="py-32 px-5 bg-background">
         <div className="max-w-6xl mx-auto">
           <FadeIn>
-            <div className="text-center mb-20">
-              <h2 className="font-display text-5xl md:text-7xl text-white mb-4">Escolha seu Plano</h2>
-              <p className="text-muted-foreground text-xl">Acesso imediato a todo o material após a confirmação</p>
-            </div>
+            <SectionHead
+              eyebrow="Investimento"
+              title={<>Escolha seu Plano</>}
+              sub="Acesso imediato a todo o material após a confirmação"
+            />
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
-            {/* Basic Plan */}
+
+            {/* ── Básico ── */}
             <FadeIn delay={0.1}>
-              <div className="h-full bg-card/80 backdrop-blur-sm border border-border rounded-3xl p-10 hover:border-primary/30 transition-all flex flex-col shadow-xl">
+              <div className="h-full bg-card/80 backdrop-blur-sm border border-border rounded-3xl p-6 sm:p-10 hover:border-primary/30 transition-all flex flex-col shadow-xl">
                 <div className="mb-8">
-                  <h3 className="font-display text-4xl text-white mb-2">Plano Básico</h3>
-                  <div className="text-muted-foreground text-sm uppercase tracking-wider font-bold mb-4">Acesso Padrão</div>
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-3xl text-gray-400 font-bold">R$</span>
-                    <span className="text-6xl font-bold text-white">12,90</span>
+                  <h3 className="font-display text-4xl text-white mb-1">Plano Básico</h3>
+                  <p className="text-muted-foreground text-xs uppercase tracking-widest font-bold mb-5">Acesso Padrão</p>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl text-gray-400 font-bold">R$</span>
+                    <span className="text-6xl font-extrabold text-white tracking-tight">12,90</span>
                   </div>
                 </div>
-                
-                <ul className="space-y-5 mb-10 flex-1">
+
+                <ul className="space-y-4 mb-10 flex-1">
                   {["Preparação e Desenvolvimento", "Técnica e Combate", "Performance e Aulas"].map((li, i) => (
-                    <li key={i} className="flex items-start gap-4 text-gray-300 text-lg">
-                      <Check size={22} className="text-primary shrink-0 mt-0.5" />
+                    <li key={i} className="flex items-start gap-3.5 text-gray-300 text-base md:text-lg">
+                      <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center">
+                        <Check size={11} className="text-primary" strokeWidth={3} />
+                      </span>
                       <span>{li}</span>
                     </li>
                   ))}
-                  <li className="flex items-start gap-4 text-gray-300 text-lg">
-                    <Check size={22} className="text-primary shrink-0 mt-0.5" />
+                  <li className="flex items-start gap-3.5 text-gray-300 text-base md:text-lg">
+                    <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center">
+                      <Check size={11} className="text-primary" strokeWidth={3} />
+                    </span>
                     <span><strong className="text-white">150 Dinâmicas completas</strong> para seus treinos</span>
                   </li>
                 </ul>
-                
+
                 <a
                   href={CHECKOUT_BASIC}
-                  className="block w-full text-center bg-primary hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] text-white font-display text-2xl py-6 rounded-xl uppercase tracking-wider transition-all shadow-[0_8px_24px_rgba(225,6,0,0.3)] hover:shadow-[0_12px_32px_rgba(225,6,0,0.45)]"
+                  className="block w-full text-center bg-primary hover:bg-[#c50500] hover:scale-[1.02] active:scale-[0.98] text-white font-display text-2xl py-5 rounded-2xl uppercase tracking-wider transition-all shadow-[0_8px_28px_rgba(225,6,0,0.32)] hover:shadow-[0_12px_36px_rgba(225,6,0,0.48)]"
                 >
                   QUERO ESTE AQUI!
                 </a>
-                <div className="mt-4 flex flex-col items-center gap-1">
-                  <span className="flex items-center gap-2 text-gray-400 text-sm"><Lock size={14} className="text-green-400" /><span>Compra 100% segura via Pix ou cartão</span></span>
-                  <span className="text-gray-500 text-xs">Garantia de 7 dias — risco zero</span>
+                <div className="mt-4 flex flex-col items-center gap-1.5">
+                  <span className="flex items-center gap-2 text-gray-400 text-sm">
+                    <Lock size={13} className="text-green-400" />
+                    <span>Compra 100% segura via Pix ou cartão</span>
+                  </span>
+                  <span className="text-gray-600 text-xs">Garantia de 7 dias — risco zero</span>
                 </div>
               </div>
             </FadeIn>
 
-            {/* Premium Plan */}
+            {/* ── Premium ── */}
             <FadeIn delay={0.2}>
-              <div className="h-full bg-gradient-to-b from-[#1a1608] to-card border-2 border-secondary rounded-3xl p-10 relative gold-glow transform md:-translate-y-4 shadow-2xl flex flex-col">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground font-bold px-6 py-2 rounded-full text-sm uppercase tracking-widest flex items-center gap-2 shadow-lg whitespace-nowrap">
+              <div className="h-full bg-gradient-to-b from-[#1c1808] to-card border-2 border-secondary rounded-3xl p-6 sm:p-10 relative gold-glow md:-translate-y-4 shadow-2xl flex flex-col">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground font-bold px-6 py-2 rounded-full text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg whitespace-nowrap">
                   ⭐ Mais Escolhido
                 </div>
-                
+
                 <div className="mb-8 mt-2">
-                  <h3 className="font-display text-5xl text-white mb-2 gold-text-gradient">Plano Premium</h3>
-                  <div className="text-secondary font-bold text-sm uppercase tracking-wider mb-4">Melhor Custo-Benefício</div>
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-3xl text-secondary/70 font-bold">R$</span>
-                    <span className="text-7xl font-bold text-white">22,90</span>
+                  <h3 className="font-display text-5xl text-white mb-1 gold-text-gradient">Plano Premium</h3>
+                  <p className="text-secondary text-xs uppercase tracking-widest font-bold mb-5">Melhor Custo-Benefício</p>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl text-secondary/70 font-bold">R$</span>
+                    <span className="text-7xl font-extrabold text-white tracking-tight">22,90</span>
                   </div>
                 </div>
-                
-                <ul className="space-y-5 mb-10 flex-1">
+
+                <ul className="space-y-4 mb-10 flex-1">
                   {["Preparação e Desenvolvimento", "Técnica e Combate", "Performance e Aulas"].map((li, i) => (
-                    <li key={i} className="flex items-start gap-4 text-gray-200 text-lg">
-                      <Check size={22} className="text-secondary shrink-0 mt-0.5" />
+                    <li key={i} className="flex items-start gap-3.5 text-gray-200 text-base md:text-lg">
+                      <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-secondary/15 border border-secondary/30 flex items-center justify-center">
+                        <Check size={11} className="text-secondary" strokeWidth={3} />
+                      </span>
                       <span>{li}</span>
                     </li>
                   ))}
-                  <li className="flex items-start gap-4 text-gray-200 text-lg">
-                    <Check size={22} className="text-secondary shrink-0 mt-0.5" />
+                  <li className="flex items-start gap-3.5 text-gray-200 text-base md:text-lg">
+                    <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-secondary/15 border border-secondary/30 flex items-center justify-center">
+                      <Check size={11} className="text-secondary" strokeWidth={3} />
+                    </span>
                     <span>As mesmas <strong className="text-white">150 dinâmicas do Básico</strong></span>
                   </li>
-                  
-                  <li className="list-none pt-4 pb-0">
-                    <div className="text-xs uppercase tracking-widest text-secondary font-bold mb-3">+ Bônus Exclusivos do Premium</div>
+
+                  <li className="list-none pt-3 pb-0">
+                    <div className="text-xs uppercase tracking-widest text-secondary font-bold mb-3 flex items-center gap-2">
+                      <span className="flex-1 h-px bg-secondary/25" />
+                      + Bônus Exclusivos do Premium
+                      <span className="flex-1 h-px bg-secondary/25" />
+                    </div>
                   </li>
-                  <li className="flex items-start gap-4 text-white font-bold bg-white/5 p-4 rounded-xl border border-white/10">
-                    <span className="text-2xl shrink-0 mt-0.5">🎁</span>
-                    <span className="text-lg">+250 Dinâmicas exclusivas <span className="text-secondary font-bold">(400+ no total)</span></span>
-                  </li>
-                  <li className="flex items-start gap-4 text-white font-bold bg-white/5 p-4 rounded-xl border border-white/10">
-                    <span className="text-2xl shrink-0 mt-0.5">🎁</span>
-                    <span className="text-lg">100 Combinações de Golpes (+ de 30 páginas extras)</span>
-                  </li>
-                  <li className="flex items-start gap-4 text-white font-bold bg-white/5 p-4 rounded-xl border border-white/10">
-                    <span className="text-2xl shrink-0 mt-0.5">🎁</span>
-                    <span className="text-lg">Cronômetro de Treinos + Protocolos de combate</span>
-                  </li>
+                  {[
+                    "+250 Dinâmicas exclusivas (400+ no total)",
+                    "100 Combinações de Golpes (+ de 30 páginas extras)",
+                    "Cronômetro de Treinos + Protocolos de combate",
+                  ].map((bonus, i) => (
+                    <li key={i} className="flex items-start gap-3.5 text-white font-semibold bg-white/5 p-4 rounded-2xl border border-white/8">
+                      <span className="text-xl shrink-0 mt-0.5">🎁</span>
+                      <span className="text-base leading-snug">
+                        {i === 0
+                          ? <><strong>+250 Dinâmicas exclusivas</strong> <span className="text-secondary font-bold">(400+ no total)</span></>
+                          : bonus}
+                      </span>
+                    </li>
+                  ))}
                 </ul>
-                
+
                 <a
                   href={CHECKOUT_PREMIUM}
-                  className="block w-full text-center bg-secondary hover:bg-[#ebd06b] hover:scale-[1.02] active:scale-[0.98] text-secondary-foreground font-display text-2xl py-6 rounded-xl uppercase tracking-wide transition-all shadow-[0_10px_30px_rgba(212,175,55,0.3)] hover:shadow-[0_14px_40px_rgba(212,175,55,0.45)]"
+                  className="block w-full text-center bg-secondary hover:bg-[#ebd06b] hover:scale-[1.02] active:scale-[0.98] text-secondary-foreground font-display text-2xl py-5 rounded-2xl uppercase tracking-wide transition-all shadow-[0_10px_32px_rgba(212,175,55,0.32)] hover:shadow-[0_14px_44px_rgba(212,175,55,0.5)]"
                 >
                   QUERO ESTE AQUI!
                 </a>
-                <div className="mt-4 flex flex-col items-center gap-1">
-                  <span className="flex items-center gap-2 text-gray-400 text-sm"><Lock size={14} className="text-green-400" /><span>Compra 100% segura via Pix ou cartão</span></span>
-                  <span className="text-gray-500 text-xs">Garantia de 7 dias — risco zero</span>
+                <div className="mt-4 flex flex-col items-center gap-1.5">
+                  <span className="flex items-center gap-2 text-gray-400 text-sm">
+                    <Lock size={13} className="text-green-400" />
+                    <span>Compra 100% segura via Pix ou cartão</span>
+                  </span>
+                  <span className="text-gray-600 text-xs">Garantia de 7 dias — risco zero</span>
                 </div>
               </div>
             </FadeIn>
@@ -415,68 +463,75 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. Como Você Recebe */}
-      <section className="py-20 bg-card/60 border-y border-border">
-        <div className="max-w-5xl mx-auto px-4 text-center flex flex-col items-center">
-          <div className="bg-primary/10 p-5 rounded-2xl mb-8 border border-primary/20">
-            <Mail className="text-primary" size={48} />
+      {/* ─── 7. COMO VOCÊ RECEBE ─────────────────────────────────── */}
+      <section className="py-24 bg-card/60 border-y border-border">
+        <div className="max-w-5xl mx-auto px-5 text-center flex flex-col items-center">
+          <div className="bg-primary/10 p-5 rounded-2xl mb-8 border border-primary/20 shadow-lg">
+            <Mail className="text-primary" size={44} strokeWidth={1.8} />
           </div>
-          <h3 className="font-display text-4xl text-white mb-6">📩 Receba diretamente no seu e-mail</h3>
-          <p className="text-muted-foreground text-xl mb-12 max-w-3xl leading-relaxed">
+          <h3 className="font-display text-4xl md:text-5xl text-white mb-5">📩 Receba diretamente no seu e-mail</h3>
+          <p className="text-muted-foreground text-lg md:text-xl mb-14 max-w-3xl leading-[1.65]">
             Após a confirmação do pagamento você receberá acesso imediato aos materiais para download em formato PDF e área de membros.
           </p>
-          <div className="flex flex-wrap gap-12 justify-center text-gray-400">
-            <div className="flex flex-col items-center gap-3">
-              <div className="bg-background p-4 rounded-full border border-border"><Smartphone size={32} /></div>
-              <span className="font-semibold uppercase tracking-wider text-sm">Celular</span>
-            </div>
-            <div className="flex flex-col items-center gap-3">
-              <div className="bg-background p-4 rounded-full border border-border"><Monitor size={32} /></div>
-              <span className="font-semibold uppercase tracking-wider text-sm">Computador</span>
-            </div>
-            <div className="flex flex-col items-center gap-3">
-              <div className="bg-background p-4 rounded-full border border-border"><Tablet size={32} /></div>
-              <span className="font-semibold uppercase tracking-wider text-sm">Tablet</span>
-            </div>
+          <div className="flex flex-wrap gap-10 md:gap-14 justify-center text-gray-400">
+            {[{ icon: Smartphone, label: "Celular" }, { icon: Monitor, label: "Computador" }, { icon: Tablet, label: "Tablet" }].map(({ icon: Icon, label }) => (
+              <div key={label} className="flex flex-col items-center gap-3">
+                <div className="bg-background p-4 rounded-full border border-border shadow-md hover:border-primary/30 transition-colors">
+                  <Icon size={30} strokeWidth={1.6} />
+                </div>
+                <span className="font-semibold uppercase tracking-wider text-xs">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 8. Depoimentos */}
-      <section className="py-32 px-4 bg-background">
+      {/* ─── 8. DEPOIMENTOS ──────────────────────────────────────── */}
+      <section className="py-32 px-5 bg-background">
         <div className="max-w-6xl mx-auto">
           <FadeIn>
-            <div className="text-center mb-16">
-              <h2 className="font-display text-5xl md:text-6xl text-white mb-4">O que dizem sobre nós</h2>
-              <p className="text-muted-foreground text-xl">Profissionais que já transformaram suas aulas</p>
-            </div>
+            <SectionHead
+              eyebrow="Avaliações"
+              title="O que dizem sobre nós"
+              sub="Profissionais que já transformaram suas aulas"
+            />
           </FadeIn>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {testimonials.map((t, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div className="h-full flex flex-col bg-[#1a1a1a] rounded-2xl overflow-hidden border border-white/10 shadow-xl hover:-translate-y-1 transition-transform duration-300">
-                  {/* Fake app header bar */}
-                  <div className="bg-[#111] px-4 py-2 flex items-center gap-2 border-b border-white/5">
-                    <div className="w-2 h-2 rounded-full bg-red-500/70"></div>
-                    <div className="w-2 h-2 rounded-full bg-yellow-500/70"></div>
-                    <div className="w-2 h-2 rounded-full bg-green-500/70"></div>
-                    <span className="ml-2 text-xs text-gray-600 tracking-wide">Avaliação verificada</span>
+              <FadeIn key={i} delay={i * 0.08}>
+                <div className="card-lift h-full flex flex-col bg-[#161616] rounded-2xl overflow-hidden border border-white/8 shadow-xl">
+                  {/* Fake review chrome */}
+                  <div className="bg-[#0f0f0f] px-4 py-2.5 flex items-center gap-2 border-b border-white/5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+                    <span className="ml-auto text-xs text-gray-600 tracking-wide">Avaliação verificada</span>
                   </div>
+
                   <div className="p-6 flex flex-col flex-1">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold font-display text-lg shrink-0">
+                    {/* Stars */}
+                    <div className="flex text-secondary mb-3 gap-0.5">
+                      {[...Array(5)].map((_, j) => <Star key={j} size={15} fill="currentColor" />)}
+                    </div>
+
+                    {/* Quote */}
+                    <p className="text-gray-300 text-base leading-[1.7] flex-1 mb-5">
+                      <span className="font-display text-4xl text-primary/40 leading-none align-bottom mr-1">"</span>
+                      {t.text}
+                      <span className="font-display text-4xl text-primary/40 leading-none align-top ml-1">"</span>
+                    </p>
+
+                    {/* Author */}
+                    <div className="flex items-center gap-3 pt-4 border-t border-white/6">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/25 flex items-center justify-center text-primary font-bold font-display text-lg shrink-0">
                         {t.name[0]}
                       </div>
                       <div>
-                        <p className="text-white font-bold leading-tight">{t.name}</p>
-                        <p className="text-gray-500 text-xs">{t.role}</p>
+                        <p className="text-white font-bold text-sm leading-tight">{t.name}</p>
+                        <p className="text-gray-500 text-xs mt-0.5">{t.role}</p>
                       </div>
                     </div>
-                    <div className="flex text-secondary mb-4 gap-0.5">
-                      {[...Array(5)].map((_, j) => <Star key={j} size={16} fill="currentColor" />)}
-                    </div>
-                    <p className="text-gray-300 text-base leading-relaxed flex-1">"{t.text}"</p>
                   </div>
                 </div>
               </FadeIn>
@@ -485,36 +540,40 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 9. Garantia */}
-      <section className="py-24 px-4 bg-gradient-to-r from-primary/10 via-background to-primary/10 border-y border-primary/20">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-10 text-center md:text-left">
+      {/* ─── 9. GARANTIA ─────────────────────────────────────────── */}
+      <section className="py-24 px-5 bg-gradient-to-r from-primary/10 via-background to-primary/10 border-y border-primary/20">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12 text-center md:text-left">
           {/* Shield badge */}
-          <div className="shrink-0 relative">
-            <div className="w-44 h-44 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border-4 border-primary/40 flex items-center justify-center shadow-[0_0_50px_rgba(225,6,0,0.25)]">
+          <div className="shrink-0">
+            <div className="relative w-48 h-48 rounded-full bg-gradient-to-br from-primary/25 to-primary/8 border-4 border-primary/35 flex items-center justify-center shadow-[0_0_60px_rgba(225,6,0,0.22)]">
+              {/* Outer ring */}
+              <div className="absolute inset-[-8px] rounded-full border border-primary/15 animate-ping opacity-20" style={{ animationDuration: '3s' }} />
               <div className="flex flex-col items-center gap-1">
-                <ShieldCheck size={56} className="text-primary" strokeWidth={1.5} />
-                <span className="font-display text-white text-xl leading-none tracking-wide">7 DIAS</span>
-                <span className="text-primary text-xs font-bold uppercase tracking-widest">Garantia</span>
+                <ShieldCheck size={60} className="text-primary" strokeWidth={1.4} />
+                <span className="font-display text-white text-2xl leading-none tracking-wide">7 DIAS</span>
+                <span className="text-primary text-[10px] font-bold uppercase tracking-[0.2em]">Garantia</span>
               </div>
             </div>
           </div>
+
           <div>
-            <h3 className="font-display text-5xl text-white mb-6">🛡 Garantia de 7 Dias</h3>
-            <p className="text-gray-300 text-xl leading-relaxed">
-              Temos tanta confiança na qualidade do material que oferecemos 7 dias de garantia incondicional. 
+            <span className="eyebrow">Sem Risco</span>
+            <h3 className="font-display text-5xl md:text-6xl text-white mb-5 leading-none">🛡 Garantia de 7 Dias</h3>
+            <p className="text-gray-300 text-lg md:text-xl leading-[1.65]">
+              Temos tanta confiança na qualidade do material que oferecemos 7 dias de garantia incondicional.
               Se o material não atender às suas expectativas, você poderá solicitar o reembolso integral dentro do prazo previsto pela plataforma. Risco zero para você.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 10. FAQ */}
-      <section className="py-32 px-4 bg-background">
+      {/* ─── 10. FAQ ─────────────────────────────────────────────── */}
+      <section className="py-32 px-5 bg-background">
         <div className="max-w-3xl mx-auto">
           <FadeIn>
-            <h2 className="font-display text-5xl md:text-6xl text-center text-white mb-16">Perguntas Frequentes</h2>
+            <SectionHead eyebrow="Dúvidas" title="Perguntas Frequentes" />
           </FadeIn>
-          <div className="bg-card/30 border border-border rounded-3xl p-6 md:p-10">
+          <div className="bg-card/30 border border-border rounded-3xl p-6 md:p-12 divide-y divide-border">
             {faqs.map((faq, i) => (
               <FaqItem key={i} q={faq.q} a={faq.a} />
             ))}
@@ -522,56 +581,58 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 11. Final CTA + Footer */}
-      <section className="py-32 px-4 border-t border-border relative overflow-hidden bg-black">
+      {/* ─── 11. FINAL CTA ───────────────────────────────────────── */}
+      <section className="py-32 px-5 border-t border-border relative overflow-hidden bg-black">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop" 
-            alt="Boxer ring" 
+          <img
+            src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop"
+            alt="Boxer ring"
             className="w-full h-full object-cover object-center opacity-20 mix-blend-luminosity grayscale"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-transparent" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <FadeIn>
-            <h2 className="font-display text-6xl md:text-7xl text-white mb-12 drop-shadow-xl uppercase leading-[0.9]">
-              Comece hoje mesmo <br/><span className="text-primary">a transformar seus treinos.</span>
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-white mb-14 drop-shadow-xl uppercase leading-[0.9]">
+              Comece hoje mesmo <br />
+              <span className="text-primary">a transformar seus treinos.</span>
             </h2>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <div className="flex flex-col sm:flex-row gap-5 justify-center max-w-2xl mx-auto">
               <a
                 href={CHECKOUT_BASIC}
-                className="flex-1 max-w-sm mx-auto sm:mx-0 flex items-center justify-center gap-3 bg-transparent border-2 border-primary hover:bg-primary text-white font-display text-2xl py-6 px-8 rounded-xl uppercase tracking-wider transition-all hover:scale-105 active:scale-95 hover:shadow-[0_8px_24px_rgba(225,6,0,0.35)]"
+                className="flex-1 flex items-center justify-center gap-3 bg-transparent border-2 border-primary hover:bg-primary text-white font-display text-2xl py-6 px-8 rounded-2xl uppercase tracking-wider transition-all hover:scale-105 active:scale-95 hover:shadow-[0_10px_28px_rgba(225,6,0,0.38)]"
               >
-                <span className="text-3xl">🥊</span> Básico
+                <span className="text-2xl">🥊</span> Básico
               </a>
               <a
                 href={CHECKOUT_PREMIUM}
-                className="flex-1 max-w-sm mx-auto sm:mx-0 flex items-center justify-center gap-3 bg-secondary hover:bg-[#ebd06b] hover:scale-105 active:scale-95 text-secondary-foreground font-display text-2xl py-6 px-8 rounded-xl uppercase tracking-wider transition-all shadow-[0_10px_30px_rgba(212,175,55,0.3)] hover:shadow-[0_14px_40px_rgba(212,175,55,0.45)]"
+                className="flex-1 flex items-center justify-center gap-3 bg-secondary hover:bg-[#ebd06b] hover:scale-105 active:scale-95 text-secondary-foreground font-display text-2xl py-6 px-8 rounded-2xl uppercase tracking-wider transition-all shadow-[0_10px_32px_rgba(212,175,55,0.3)] hover:shadow-[0_14px_44px_rgba(212,175,55,0.48)]"
               >
-                <span className="text-3xl">🏆</span> Premium
+                <span className="text-2xl">🏆</span> Premium
               </a>
             </div>
           </FadeIn>
         </div>
       </section>
 
-      <footer className="bg-[#050505] py-12 text-center border-t border-white/5 relative z-20">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col items-center gap-6">
-          <h2 className="font-display text-3xl text-white/30 tracking-widest">BOXLAB</h2>
-          <p className="text-sm text-gray-500 max-w-lg mx-auto">
-            Este site não é afiliado ao Facebook ou a qualquer entidade do Facebook. 
+      {/* ─── FOOTER ──────────────────────────────────────────────── */}
+      <footer className="bg-[#040404] py-14 text-center border-t border-white/5 relative z-20">
+        <div className="max-w-6xl mx-auto px-5 flex flex-col items-center gap-5">
+          <h2 className="font-display text-3xl text-white/20 tracking-[0.3em]">BOXLAB</h2>
+          <p className="text-sm text-gray-600 max-w-lg mx-auto leading-relaxed">
+            Este site não é afiliado ao Facebook ou a qualquer entidade do Facebook.
             Depois que você sair do Facebook, a responsabilidade não é deles e sim do nosso site.
           </p>
-          <p className="text-sm text-gray-600">&copy; {new Date().getFullYear()} BoxLab. Todos os direitos reservados.</p>
-          <div className="flex gap-6 text-sm text-gray-500 mt-4">
-            <a href="#" className="hover:text-primary transition-colors uppercase tracking-wider font-semibold">Política de Privacidade</a>
-            <a href="#" className="hover:text-primary transition-colors uppercase tracking-wider font-semibold">Termos de Uso</a>
+          <p className="text-sm text-gray-700">&copy; {new Date().getFullYear()} BoxLab. Todos os direitos reservados.</p>
+          <div className="flex gap-6 text-xs text-gray-600 mt-2">
+            <a href="#" className="hover:text-primary transition-colors uppercase tracking-widest font-semibold">Política de Privacidade</a>
+            <a href="#" className="hover:text-primary transition-colors uppercase tracking-widest font-semibold">Termos de Uso</a>
           </div>
         </div>
       </footer>
-      
+
     </div>
   );
 }
