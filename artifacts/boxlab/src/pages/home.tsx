@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Clock, Shuffle, LayoutList, Lightbulb, TrendingUp, Medal, 
   Check, Dumbbell, Target, Zap, Mail, Smartphone, Monitor, Tablet, 
-  Star, ShieldCheck, Plus, X, Lock
+  Star, ShieldCheck, Plus, X, Lock,
+  Play, Pause, Volume2, VolumeX
 } from 'lucide-react';
 
 // ── Checkout URLs ──────────────────────────────────────────────────
@@ -194,6 +195,185 @@ function UpsellModal({ onAccept, onDecline }: { onAccept: () => void; onDecline:
   );
 }
 
+// ── VSL Player ─────────────────────────────────────────────────────
+function VSLPlayer({ checkoutUrl }: { checkoutUrl: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [unlocked, setUnlocked] = useState(false);
+  const [playing, setPlaying]   = useState(false);
+  const [muted, setMuted]       = useState(true);
+  const [progress, setProgress] = useState(0);
+
+  // React doesn't sync `muted` JSX prop to DOM reliably — drive it via effect
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.muted = muted;
+  }, [muted]);
+
+  const unlock = useCallback(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    setMuted(false);           // triggers the effect above
+    v.play().then(() => {
+      setPlaying(true);
+      setUnlocked(true);
+    }).catch(() => {
+      // Autoplay blocked — still show unlocked UI so user can retry
+      setUnlocked(true);
+      setPlaying(false);
+    });
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (!unlocked) { unlock(); return; }
+    if (v.paused) {
+      v.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    } else {
+      v.pause();
+      setPlaying(false);
+    }
+  }, [unlocked, unlock]);
+
+  const toggleMute = useCallback(() => {
+    setMuted(prev => !prev);
+  }, []);
+
+  const onTimeUpdate = useCallback(() => {
+    const v = videoRef.current;
+    if (!v || !v.duration) return;
+    setProgress((v.currentTime / v.duration) * 100);
+  }, []);
+
+  const seek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const v = videoRef.current;
+    if (!v || !unlocked) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct  = (e.clientX - rect.left) / rect.width;
+    v.currentTime = pct * v.duration;
+  }, [unlocked]);
+
+  return (
+    <div className="flex flex-col items-center gap-6">
+      {/* ── Video container ── */}
+      <div className="relative w-full max-w-[340px] sm:max-w-[380px] mx-auto vsl-glow-ring rounded-2xl overflow-hidden bg-black"
+           style={{ aspectRatio: '9/16' }}>
+
+        {/* Animated glow border (rendered via ::before in CSS) */}
+
+        <video
+          ref={videoRef}
+          src="/vsl.mp4"
+          className="w-full h-full object-cover"
+          playsInline
+          preload="metadata"
+          onTimeUpdate={onTimeUpdate}
+          onEnded={() => setPlaying(false)}
+        />
+
+        {/* Unlock overlay — shown until user clicks */}
+        <AnimatePresence>
+          {!unlocked && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
+              className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-5 cursor-pointer bg-black/65 backdrop-blur-[2px]"
+              onClick={unlock}
+            >
+              {/* Pulsing play ring */}
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-primary/40 animate-ping scale-125" />
+                <div className="relative w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-[0_0_40px_rgba(225,6,0,0.8)]">
+                  <Play size={34} className="text-white ml-1.5" fill="white" />
+                </div>
+              </div>
+              {/* Unlock label */}
+              <div className="bg-black/70 border border-primary/40 rounded-xl px-5 py-3 text-center">
+                <p className="font-display text-white text-xl tracking-widest uppercase leading-tight">
+                  🔓 Clique para desbloquear
+                </p>
+                <p className="text-gray-400 text-xs mt-1 tracking-wide">assista antes de comprar</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Tap-to-toggle play (after unlock) */}
+        {unlocked && (
+          <div className="absolute inset-0 z-10 cursor-pointer" onClick={togglePlay}>
+            <AnimatePresence>
+              {!playing && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="absolute inset-0 flex items-center justify-center bg-black/30"
+                >
+                  <div className="w-16 h-16 rounded-full bg-black/60 flex items-center justify-center">
+                    <Play size={28} className="text-white ml-1" fill="white" />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+
+        {/* Controls bar */}
+        {unlocked && (
+          <div className="absolute bottom-0 left-0 right-0 z-20 px-3 pb-3 pt-8 bg-gradient-to-t from-black/80 to-transparent">
+            {/* Progress bar */}
+            <div
+              className="w-full h-1 bg-white/20 rounded-full mb-2 cursor-pointer overflow-hidden"
+              onClick={seek}
+            >
+              <div
+                className="h-full bg-primary rounded-full transition-all"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            {/* Buttons row */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={togglePlay}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+              >
+                {playing
+                  ? <Pause size={14} className="text-white" fill="white" />
+                  : <Play  size={14} className="text-white ml-0.5" fill="white" />}
+              </button>
+              <button
+                onClick={toggleMute}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+              >
+                {muted
+                  ? <VolumeX size={14} className="text-white" />
+                  : <Volume2 size={14} className="text-white" />}
+              </button>
+              <div className="flex-1 text-right">
+                <span className="text-white/50 text-[10px] uppercase tracking-wider">BOXLAB</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── CTA below video ── */}
+      <div className="w-full max-w-[380px] mx-auto flex flex-col items-center gap-3">
+        <a
+          href={checkoutUrl}
+          className="cta-pulse block w-full text-center bg-primary hover:bg-[#c50500] text-white font-display text-2xl py-5 rounded-2xl uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_8px_30px_rgba(225,6,0,0.4)]"
+        >
+          QUERO MEU ACESSO AGORA
+        </a>
+        <span className="flex items-center gap-2 text-gray-400 text-sm">
+          <Lock size={13} className="text-green-400" />
+          Compra 100% segura via Pix ou cartão
+        </span>
+      </div>
+    </div>
+  );
+}
+
 // ── Page ───────────────────────────────────────────────────────────
 export default function Home() {
   const [upsellOpen, setUpsellOpen] = useState(false);
@@ -312,6 +492,21 @@ export default function Home() {
               QUERO MEU ACESSO AGORA
             </a>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ─── VSL ─────────────────────────────────────────────────── */}
+      <section className="py-16 px-5 bg-background relative z-10">
+        <div className="max-w-lg mx-auto">
+          <FadeIn>
+            <div className="text-center mb-8">
+              <span className="eyebrow justify-center">Assista antes de comprar</span>
+              <h2 className="font-display text-4xl md:text-5xl text-white leading-none">
+                Veja como funciona o <span className="text-primary">BoxLab</span>
+              </h2>
+            </div>
+            <VSLPlayer checkoutUrl={CHECKOUT_SPECIAL} />
+          </FadeIn>
         </div>
       </section>
 

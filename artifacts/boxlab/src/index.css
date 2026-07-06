@@ -220,3 +220,14 @@
   margin: 0 auto 1.5rem;
   border-radius: 9999px;
 }
+
+/* ── VSL glowing border ───────────────────────────────── */
+@keyframes vsl-glow {
+  0%, 100% { box-shadow: 0 0 18px 3px rgba(225,6,0,0.7), 0 0 50px 10px rgba(225,6,0,0.3), inset 0 0 0 2px rgba(225,6,0,0.9); }
+  50%       { box-shadow: 0 0 32px 8px rgba(225,6,0,0.9), 0 0 80px 20px rgba(225,6,0,0.45), inset 0 0 0 2px rgba(255,50,50,1); }
+}
+
+.vsl-glow-ring {
+  border: 2px solid rgba(225, 6, 0, 0.9);
+  animation: vsl-glow 2.4s ease-in-out infinite;
+}
