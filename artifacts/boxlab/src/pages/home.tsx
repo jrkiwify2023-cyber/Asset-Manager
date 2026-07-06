@@ -100,8 +100,119 @@ function Scoreboard({ seconds }: { seconds: number }) {
   );
 }
 
+// ── Upsell Modal ───────────────────────────────────────────────────
+function UpsellModal({ onAccept, onDecline }: { onAccept: () => void; onDecline: () => void }) {
+  const premiumItems = [
+    { text: "150 Dinâmicas do Plano Básico", highlight: false },
+    { text: "+250 Dinâmicas exclusivas (400+ no total)", highlight: true },
+    { text: "100 Combinações de Golpes (30+ páginas extras)", highlight: true },
+    { text: "Cronômetro de Treinos + Protocolos de combate", highlight: true },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm"
+      onClick={onDecline}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 24 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.92, y: 24 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full max-w-lg bg-gradient-to-b from-[#1c1808] to-[#0f0f0f] border-2 border-secondary rounded-3xl p-7 sm:p-10 shadow-[0_0_80px_rgba(212,175,55,0.3)] gold-glow overflow-hidden"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Close */}
+        <button
+          onClick={onDecline}
+          className="absolute top-4 right-4 w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-gray-400 hover:text-white hover:border-white/40 transition-colors"
+        >
+          <X size={16} />
+        </button>
+
+        {/* Badge */}
+        <div className="flex justify-center mb-5">
+          <span className="bg-secondary text-secondary-foreground font-bold text-xs uppercase tracking-widest px-5 py-2 rounded-full flex items-center gap-2 shadow-lg">
+            ⭐ Oferta Especial Exclusiva
+          </span>
+        </div>
+
+        <h3 className="font-display text-3xl sm:text-4xl text-white text-center mb-2 leading-tight">
+          Espera! Antes de finalizar…
+        </h3>
+        <p className="text-gray-300 text-center text-base leading-relaxed mb-6">
+          Leve <strong className="text-white">tudo do Plano Premium</strong> por apenas:
+        </p>
+
+        {/* Price */}
+        <div className="flex items-baseline justify-center gap-2 mb-6">
+          <span className="text-secondary/70 text-2xl font-bold">R$</span>
+          <span className="text-7xl font-extrabold text-white tracking-tight gold-text-gradient">16,90</span>
+          <div className="flex flex-col text-left ml-2">
+            <span className="text-gray-500 text-xs line-through">R$ 22,90</span>
+            <span className="text-green-400 text-xs font-bold uppercase tracking-wider">Economia!</span>
+          </div>
+        </div>
+
+        {/* Items */}
+        <ul className="space-y-3 mb-8">
+          {premiumItems.map((item, i) => (
+            <li key={i} className={`flex items-start gap-3 rounded-xl px-4 py-3 ${item.highlight ? 'bg-white/5 border border-secondary/20' : 'bg-white/3'}`}>
+              <span className={`shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center ${item.highlight ? 'bg-secondary/20 border border-secondary/40' : 'bg-primary/15 border border-primary/30'}`}>
+                <Check size={11} className={item.highlight ? 'text-secondary' : 'text-primary'} strokeWidth={3} />
+              </span>
+              <span className={`text-sm leading-snug ${item.highlight ? 'text-white font-semibold' : 'text-gray-300'}`}>
+                {item.highlight && <span className="text-secondary mr-1">🎁</span>}
+                {item.text}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        {/* Accept CTA */}
+        <a
+          href="#"
+          onClick={e => { e.preventDefault(); onAccept(); }}
+          className="block w-full text-center bg-secondary hover:bg-[#ebd06b] text-secondary-foreground font-display text-2xl py-5 rounded-2xl uppercase tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_10px_32px_rgba(212,175,55,0.35)] mb-4"
+        >
+          SIM! QUERO POR R$ 16,90
+        </a>
+
+        {/* Decline */}
+        <button
+          onClick={onDecline}
+          className="w-full text-center text-gray-500 hover:text-gray-300 text-sm transition-colors py-2 underline underline-offset-4"
+        >
+          Não obrigado, quero apenas o Básico por R$ 12,90
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // ── Page ───────────────────────────────────────────────────────────
 export default function Home() {
+  const [upsellOpen, setUpsellOpen] = useState(false);
+
+  const openUpsell = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setUpsellOpen(true);
+  };
+
+  const handleUpsellAccept = () => {
+    setUpsellOpen(false);
+    window.location.href = CHECKOUT_SPECIAL;
+  };
+
+  const handleUpsellDecline = () => {
+    setUpsellOpen(false);
+    window.location.href = CHECKOUT_BASIC;
+  };
+
   const [timeLeft, setTimeLeft] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -375,6 +486,7 @@ export default function Home() {
 
                 <a
                   href={CHECKOUT_BASIC}
+                  onClick={openUpsell}
                   className="block w-full text-center bg-primary hover:bg-[#c50500] hover:scale-[1.02] active:scale-[0.98] text-white font-display text-2xl py-5 rounded-2xl uppercase tracking-wider transition-all shadow-[0_8px_28px_rgba(225,6,0,0.32)] hover:shadow-[0_12px_36px_rgba(225,6,0,0.48)]"
                 >
                   QUERO ESTE AQUI!
@@ -602,6 +714,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-5 justify-center max-w-2xl mx-auto">
               <a
                 href={CHECKOUT_BASIC}
+                onClick={openUpsell}
                 className="flex-1 flex items-center justify-center gap-3 bg-transparent border-2 border-primary hover:bg-primary text-white font-display text-2xl py-6 px-8 rounded-2xl uppercase tracking-wider transition-all hover:scale-105 active:scale-95 hover:shadow-[0_10px_28px_rgba(225,6,0,0.38)]"
               >
                 <span className="text-2xl">🥊</span> Básico
@@ -632,6 +745,13 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* ─── UPSELL MODAL ────────────────────────────────────────── */}
+      <AnimatePresence>
+        {upsellOpen && (
+          <UpsellModal onAccept={handleUpsellAccept} onDecline={handleUpsellDecline} />
+        )}
+      </AnimatePresence>
 
     </div>
   );
