@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "TIJ8uRiexlvyISYtZtnYi"
+uri = "file://artifacts/boxlab/public/hero-boxing.png"
+type = "image"
+title = "Dramatic boxing hero image"
