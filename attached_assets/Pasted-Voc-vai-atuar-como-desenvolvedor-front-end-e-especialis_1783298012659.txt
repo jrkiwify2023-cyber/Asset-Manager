@@ -1,0 +1,59 @@
+Você vai atuar como desenvolvedor front-end e especialista em CRO (otimização de conversão) para revisar e editar o código da landing page do projeto "BoxLab" (infoproduto de dinâmicas para aulas de boxe, R$12,90 e R$22,90).
+
+Antes de editar, localize os componentes/arquivos responsáveis por: hero/headline, seção de planos e preços, depoimentos, timer de urgência, FAQ e botões de CTA.
+
+Faça as seguintes alterações DIRETO NO CÓDIGO:
+
+## 1. DEPOIMENTOS
+Localize o componente de depoimentos e substitua o texto atual (genérico: "recomendo", "valeu cada centavo") por versões mais específicas e cheias de credibilidade, incluindo tempo de uso e resultado concreto. Use este texto:
+
+- Carlos M. (Professor de Boxe): "Uso o material há 2 meses e já economizei fácil umas 6 horas por semana só de planejamento de aula. Meus alunos notaram a diferença na variedade dos treinos."
+- Fernanda R. (Personal Trainer): "Comprei o Premium e os bônus (cronômetro e certificado) elevaram o nível da minha academia. Recuperei o investimento na primeira semana com um aluno novo."
+- Juliana P. (Aluna): "Treino boxe em casa há 1 mês usando o material e nunca fiquei sem saber o que fazer. Tem dinâmica pra todo nível, do zero ao avançado."
+
+Se possível, adicione um campo visual indicando "print de depoimento" ou estrutura de card que pareça mais uma captura de tela real (aumenta credibilidade em oferta de ticket baixo).
+
+## 2. CLAREZA ENTRE PLANOS (RESOLVER AMBIGUIDADE)
+No card do Plano Premium, o texto "Mais de 400 Dinâmicas no total" está ambíguo em relação ao Básico ter "150 Dinâmicas". Corrija o texto para deixar claro se são adicionais ou totais. Exemplo de correção, ajuste conforme o valor real:
+
+- Básico: "150 Dinâmicas completas para seus treinos"
+- Premium: "As mesmas 150 dinâmicas do Básico + mais 250 dinâmicas exclusivas (400+ no total)"
+
+Garanta que essa diferença fique visualmente destacada (ex: badge ou texto em negrito) para reforçar o valor do upgrade.
+
+## 3. TIMER DE URGÊNCIA
+Localize o componente do timer (contador regressivo). Se ele resetar automaticamente pra cada visitante em poucos minutos (ex: 9-10 min), isso reduz credibilidade. Ajuste a lógica para:
+- Persistir o tempo real de sessão do usuário usando localStorage, com duração de 20-30 minutos, OU
+- Trocar a lógica de "tempo" por "vagas restantes" (ex: contador decrescente de vagas com bônus, armazenado em estado/local)
+
+Mantenha o aviso abaixo do timer: "Após o término da oferta os valores poderão ser alterados sem aviso prévio."
+
+## 4. FAQ
+Verifique se o componente de FAQ (provavelmente um accordion) está exibindo respostas ao expandir cada pergunta. Preencha ou corrija as respostas de cada item:
+
+- "O acesso é imediato?" → "Sim! Em até 5 minutos após a confirmação do pagamento você recebe o acesso completo por e-mail."
+- "Posso acessar pelo celular?" → "Sim, todo o material é otimizado para celular, tablet e computador."
+- "Serve para iniciantes?" → "Sim, o conteúdo cobre desde o nível iniciante até o avançado."
+- "Recebo por e-mail?" → "Sim, o acesso é enviado automaticamente para o e-mail usado na compra."
+- "Os bônus fazem parte de qual plano?" → "Os bônus (Cronômetro de Treinos e Certificado do Boxe) são exclusivos do Plano Premium."
+
+## 5. REFORÇO DE SEGURANÇA ANTES DO CHECKOUT
+Como o botão de compra redireciona para um checkout externo (wiapy), adicione, logo abaixo de cada botão de compra:
+- Um ícone de cadeado + texto: "Compra 100% segura via Pix ou cartão"
+- Reforço curto da garantia: "Garantia de 7 dias — risco zero"
+
+## 6. TEXTO DOS BOTÕES DE CTA — MANTER IDÊNTICO EM TODOS OS PONTOS
+IMPORTANTE: NÃO altere o texto dos botões de compra. Eles precisam permanecer EXATAMENTE IGUAIS (mesmo texto, mesmo case, mesma pontuação) em todos os pontos da página — Plano Básico, Plano Premium e CTA final — pois o pixel de rastreamento (Meta/Google Ads) usa esse texto para identificar corretamente qual produto/evento foi clicado.
+
+Mantenha o texto atual "Quero Comprar" (ou o texto que já está configurado) sem nenhuma variação entre os botões. Não crie textos diferentes por plano.
+
+Se quiser reforçar a ação sem quebrar o rastreamento, adicione apenas elementos VISUAIS ao redor do botão (ícone, selo de segurança, texto de garantia acima/abaixo), mas o texto do botão em si deve continuar idêntico em todos os lugares.
+
+## RESTRIÇÕES IMPORTANTES
+- NÃO altere links de pagamento, integrações com wiapy, pixel de rastreamento (Meta/Google Ads) ou qualquer lógica de backend.
+- NÃO altere o texto dos botões de compra (CTA) em nenhuma hipótese — eles devem permanecer idênticos entre os planos para não quebrar a identificação do produto pelo pixel de rastreamento.
+- Mantenha toda a estrutura de seções e ordem atual da página.
+- Preserve responsividade mobile em todas as alterações.
+- Depois de cada edição, rode o preview e confirme visualmente que nada quebrou no layout.
+
+Ao final, me dê um resumo do que foi alterado em cada arquivo/componente.
