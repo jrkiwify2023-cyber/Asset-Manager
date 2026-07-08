@@ -83,9 +83,16 @@ function DigitBlock({ value }: { value: string }) {
   );
 }
 
-function Scoreboard({ seconds }: { seconds: number }) {
+function Scoreboard({ seconds, compact = false }: { seconds: number; compact?: boolean }) {
   const m = Math.floor(seconds / 60).toString().padStart(2, '0');
   const s = (seconds % 60).toString().padStart(2, '0');
+  if (compact) {
+    return (
+      <span className="font-display text-sm sm:text-base text-white tabular-nums tracking-widest">
+        {m}:{s}
+      </span>
+    );
+  }
   return (
     <div className="flex items-center gap-2 sm:gap-3">
       <div className="flex gap-1.5">
@@ -360,10 +367,11 @@ function VSLPlayer({ checkoutUrl }: { checkoutUrl: string }) {
       {/* ── CTA below video ── */}
       <div className="w-full max-w-[380px] mx-auto flex flex-col items-center gap-3">
         <a
-          href={checkoutUrl}
+          href="#planos"
+          onClick={e => { e.preventDefault(); document.getElementById('planos')?.scrollIntoView({ behavior: 'smooth' }); }}
           className="cta-pulse block w-full text-center bg-primary hover:bg-[#c50500] text-white font-display text-2xl py-5 rounded-2xl uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_8px_30px_rgba(225,6,0,0.4)]"
         >
-          QUERO MEU ACESSO AGORA
+          VER PLANOS E PREÇOS
         </a>
         <span className="flex items-center gap-2 text-gray-400 text-sm">
           <Lock size={13} className="text-green-400" />
@@ -456,8 +464,27 @@ export default function Home() {
   return (
     <div className="bg-noise min-h-screen">
 
+      {/* ─── ANNOUNCEMENT BAR ────────────────────────────────────── */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/8">
+        <div className="max-w-5xl mx-auto px-4 py-2 flex items-center justify-center gap-3 sm:gap-6 flex-wrap">
+          <span className="text-white/90 text-xs sm:text-sm font-medium tracking-wide flex items-center gap-1.5">
+            🔥 <span>Oferta especial — valores podem ser alterados após o término</span>
+          </span>
+          <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1">
+            <span className="text-white/50 text-[10px] uppercase tracking-widest hidden sm:inline">Encerra em</span>
+            <Scoreboard seconds={timeLeft} compact />
+          </div>
+          <a
+            href={CHECKOUT_SPECIAL}
+            className="bg-primary hover:bg-[#c50500] text-white font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+          >
+            Aproveitar agora
+          </a>
+        </div>
+      </div>
+
       {/* ─── 1. HERO ─────────────────────────────────────────────── */}
-      <section className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-20 px-5 overflow-hidden border-b border-border">
+      <section className="relative min-h-[92vh] flex items-center justify-center pt-36 pb-20 px-5 overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0 bg-black">
           <img
             src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop"
@@ -512,43 +539,6 @@ export default function Home() {
             </div>
             <VSLPlayer checkoutUrl={CHECKOUT_SPECIAL} />
           </FadeIn>
-        </div>
-      </section>
-
-      {/* ─── 5. OFERTA ESPECIAL + TIMER ──────────────────────────── */}
-      <section className="bg-primary py-14 px-5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop')] opacity-10 mix-blend-multiply bg-cover bg-center" />
-        {/* Diagonal stripe overlay */}
-        <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "repeating-linear-gradient(45deg,#000 0,#000 1px,transparent 0,transparent 50%)", backgroundSize: "10px 10px" }} />
-
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
-          {/* Left */}
-          <div className="text-center md:text-left">
-            <h3 className="font-display text-4xl md:text-5xl text-white mb-3 uppercase flex items-center justify-center md:justify-start gap-3">
-              <span>🔥</span> Oferta Especial
-            </h3>
-            <p className="text-white/85 font-medium text-lg mb-6 max-w-sm leading-relaxed">
-              Após o término da oferta os valores poderão ser alterados.
-            </p>
-            <a
-              href={CHECKOUT_SPECIAL}
-              className="inline-block bg-white text-primary font-display text-xl px-9 py-4 rounded-xl uppercase tracking-widest hover:bg-white/92 hover:scale-105 active:scale-95 transition-all shadow-[0_6px_24px_rgba(0,0,0,0.3)]"
-            >
-              APROVEITAR AGORA
-            </a>
-          </div>
-
-          {/* Right — scoreboard */}
-          <div className="flex flex-col items-center gap-3">
-            <p className="text-xs text-white/55 font-bold uppercase tracking-widest">Encerra em</p>
-            <div className="bg-[#080808] border border-white/10 rounded-2xl px-6 py-5 shadow-[0_12px_50px_rgba(0,0,0,0.6)]">
-              <Scoreboard seconds={timeLeft} />
-            </div>
-            <div className="flex gap-10">
-              <span className="text-white/45 text-xs uppercase tracking-widest">Minutos</span>
-              <span className="text-white/45 text-xs uppercase tracking-widest">Segundos</span>
-            </div>
-          </div>
         </div>
       </section>
 
