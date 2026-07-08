@@ -475,12 +475,13 @@ export default function Home() {
             transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="eyebrow justify-center">BOXLAB</p>
-            <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[7rem] font-display text-white mb-6 leading-[0.92] uppercase drop-shadow-2xl">
-              150 Dinâmicas <br />
-              <span className="text-primary">para Aulas de Boxe</span>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[6rem] font-display text-white mb-6 leading-[0.95] uppercase drop-shadow-2xl">
+              Chega de Ficar<br />
+              <span className="text-primary">Sem Ideia Pro</span><br />
+              Treino de Boxe
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-[1.65]">
-              Transforme seus treinos com uma biblioteca completa de dinâmicas prontas para professores, academias e pessoas que desejam aprender Boxe em casa.
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-[1.65]">
+              150 dinâmicas prontas, organizadas e fáceis de aplicar. Pra quem ensina boxe ou quer aprender sozinho, em casa.
             </p>
 
             {/* Pulse CTA */}
@@ -499,104 +500,18 @@ export default function Home() {
       <section className="py-16 px-5 bg-background relative z-10">
         <div className="max-w-lg mx-auto">
           <FadeIn>
-            <div className="text-center mb-8">
-              <span className="eyebrow justify-center">Assista antes de comprar</span>
-              <h2 className="font-display text-4xl md:text-5xl text-white leading-none">
-                Veja como funciona o <span className="text-primary">BoxLab</span>
+            <div className="text-center mb-10">
+              <span className="eyebrow justify-center mb-4">Assista antes de comprar</span>
+              <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-white leading-[0.92] uppercase tracking-tight">
+                Veja como<br />
+                <span className="text-primary">funciona</span>
               </h2>
+              <p className="text-gray-400 text-base mt-4 leading-relaxed max-w-sm mx-auto">
+                Em menos de alguns minutos você entende tudo sobre o material.
+              </p>
             </div>
             <VSLPlayer checkoutUrl={CHECKOUT_SPECIAL} />
           </FadeIn>
-        </div>
-      </section>
-
-      {/* ─── 2. BENEFÍCIOS ───────────────────────────────────────── */}
-      <section className="py-28 px-5 bg-background relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {benefits.map((b, i) => (
-              <FadeIn key={i} delay={i * 0.08}>
-                <div className="card-lift bg-card/60 backdrop-blur-sm border border-card-border p-7 md:p-8 rounded-2xl flex items-start gap-5 hover:border-primary/40 hover:bg-card shadow-lg h-full">
-                  <div className="bg-primary/10 p-4 rounded-xl text-primary shrink-0 border border-primary/15">
-                    <b.icon size={30} strokeWidth={1.8} />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-bold text-xl mb-1 leading-tight">{b.title}</h3>
-                    <p className="text-muted-foreground text-base leading-relaxed">{b.desc}</p>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── 3. PARA QUEM É ──────────────────────────────────────── */}
-      <section className="py-24 px-5 bg-card/30 border-y border-border">
-        <div className="max-w-5xl mx-auto text-center">
-          <FadeIn>
-            <SectionHead eyebrow="Público-alvo" title="Para Quem É o BoxLab?" />
-            <div className="flex flex-wrap justify-center gap-3 md:gap-4">
-              {targets.map((t, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-2.5 bg-card border border-border hover:border-primary/50 hover:bg-card/80 transition-all px-5 py-3.5 rounded-full shadow-md"
-                >
-                  <Check className="text-primary shrink-0" size={18} strokeWidth={3} />
-                  <span className="text-white font-semibold text-base md:text-lg">{t}</span>
-                </div>
-              ))}
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ─── 4. O QUE VOCÊ RECEBE ────────────────────────────────── */}
-      <section className="py-32 px-5 bg-background relative">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn>
-            <SectionHead
-              eyebrow="Conteúdo"
-              title="O Que Você Recebe"
-              sub="Um arsenal completo de treinos divididos em 3 pilares"
-            />
-          </FadeIn>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-7 relative">
-            {/* Central badge — desktop only */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col items-center justify-center w-40 h-40 bg-primary text-white font-display text-3xl leading-none text-center rounded-full border-8 border-background shadow-[0_0_50px_rgba(225,6,0,0.45)]">
-              <span>150</span>
-              <span className="text-base mt-1 tracking-wider">DINÂMICAS</span>
-            </div>
-
-            {[
-              { title: "Preparação e Desenvolvimento", icon: Dumbbell, img: "https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=800&auto=format&fit=crop" },
-              { title: "Técnica e Combate",            icon: Target,   img: "https://images.unsplash.com/photo-1591504770054-c9b2ccab72f5?q=80&w=800&auto=format&fit=crop" },
-              { title: "Performance e Aulas",          icon: Zap,      img: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop" },
-            ].map((item, i) => (
-              <FadeIn key={i} delay={i * 0.15}>
-                <div className="card-lift bg-card rounded-3xl overflow-hidden border border-border shadow-xl group">
-                  <div className="h-64 relative overflow-hidden bg-black">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 group-hover:via-black/40 transition-colors" />
-                    <img
-                      src={item.img}
-                      alt={item.title}
-                      className="w-full h-full object-cover opacity-80 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700"
-                      loading="lazy"
-                    />
-                    <div className="absolute bottom-6 left-6 z-20">
-                      <div className="bg-primary p-3 rounded-xl text-white shadow-lg">
-                        <item.icon size={28} strokeWidth={2} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-8">
-                    <h3 className="font-display text-3xl text-white tracking-wide leading-tight">{item.title}</h3>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
         </div>
       </section>
 
