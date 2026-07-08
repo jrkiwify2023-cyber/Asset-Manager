@@ -465,26 +465,23 @@ export default function Home() {
     <div className="bg-noise min-h-screen">
 
       {/* ─── ANNOUNCEMENT BAR ────────────────────────────────────── */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/8">
-        <div className="max-w-5xl mx-auto px-4 py-2 flex items-center justify-center gap-3 sm:gap-6 flex-wrap">
-          <span className="text-white/90 text-xs sm:text-sm font-medium tracking-wide flex items-center gap-1.5">
-            🔥 <span>Oferta especial — valores podem ser alterados após o término</span>
-          </span>
-          <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1">
-            <span className="text-white/50 text-[10px] uppercase tracking-widest hidden sm:inline">Encerra em</span>
+      <a
+        href={CHECKOUT_SPECIAL}
+        className="announcement-bar fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-3 sm:gap-5 px-4 py-3 cursor-pointer"
+      >
+        {/* left glow pulse */}
+        <span className="hidden sm:block w-2 h-2 rounded-full bg-white animate-ping opacity-80" />
+        <span className="font-display text-white text-xl sm:text-2xl md:text-3xl uppercase tracking-wide leading-none text-center">
+          🔥 Oferta especial — encerra em{' '}
+          <span className="text-white underline decoration-white/40 underline-offset-4">
             <Scoreboard seconds={timeLeft} compact />
-          </div>
-          <a
-            href={CHECKOUT_SPECIAL}
-            className="bg-primary hover:bg-[#c50500] text-white font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-lg transition-colors whitespace-nowrap"
-          >
-            Aproveitar agora
-          </a>
-        </div>
-      </div>
+          </span>
+        </span>
+        <span className="hidden sm:block w-2 h-2 rounded-full bg-white animate-ping opacity-80" />
+      </a>
 
       {/* ─── 1. HERO ─────────────────────────────────────────────── */}
-      <section className="relative min-h-[92vh] flex items-center justify-center pt-36 pb-20 px-5 overflow-hidden border-b border-border">
+      <section className="relative min-h-[92vh] flex items-center justify-center pt-40 pb-20 px-5 overflow-hidden border-b border-border">
         <div className="absolute inset-0 z-0 bg-black">
           <img
             src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=2000&auto=format&fit=crop"
