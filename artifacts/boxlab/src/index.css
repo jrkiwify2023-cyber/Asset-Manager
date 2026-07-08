@@ -221,6 +221,30 @@
   border-radius: 9999px;
 }
 
+/* ── Announcement bar ────────────────────────────────── */
+@keyframes bar-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.announcement-bar {
+  background: linear-gradient(90deg,
+    #b00400 0%,
+    #e10600 20%,
+    #ff2a00 40%,
+    #ff6a00 50%,
+    #ff2a00 60%,
+    #e10600 80%,
+    #b00400 100%
+  );
+  background-size: 200% auto;
+  animation: bar-shimmer 3s linear infinite;
+  box-shadow:
+    0 0 18px rgba(225, 6, 0, 0.9),
+    0 0 40px rgba(225, 6, 0, 0.5),
+    0 4px 24px rgba(0, 0, 0, 0.6);
+}
+
 /* ── VSL glowing border ───────────────────────────────── */
 @keyframes vsl-glow {
   0%, 100% { box-shadow: 0 0 18px 3px rgba(225,6,0,0.7), 0 0 50px 10px rgba(225,6,0,0.3), inset 0 0 0 2px rgba(225,6,0,0.9); }
